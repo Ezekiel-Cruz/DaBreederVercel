@@ -5,6 +5,7 @@ import useDogMatches from "../hooks/useDogMatches";
 // ...existing code...
 import ReportModal from "../components/ReportModal";
 import { useAuth } from "../hooks/useAuth";
+import Modal from "../components/Modal";
 
 import "./DogProfilePage.css"; // warm dog-lover theme
 import LoadingState from "../components/LoadingState";
@@ -17,6 +18,7 @@ export default function DogProfilePage() {
   const { historyMatches, loading: matchesLoading, error: matchesError } = useDogMatches();
   const { user } = useAuth();
   const [reportOpen, setReportOpen] = useState(false);
+  const [outcomeDetails, setOutcomeDetails] = useState(null);
 
   useEffect(() => {
     document.title = dog?.name ? `${dog.name} 🐾 | DaBreeder` : "Dog Profile 🐾 | DaBreeder";
@@ -544,7 +546,33 @@ export default function DogProfilePage() {
                                   .replace("completed_", "Completed: ")
                                   .replace("_", " ")}
                               </td>
-                              <td>{outcome}</td>
+                              <td>
+                                {(() => {
+                                  const lower = String(outcome).toLowerCase();
+                                  const isSuccess =
+                                    lower === "success" || match.status === "completed_success";
+                                  if (!isSuccess) return outcome;
+                                  const litterSize = match.outcome?.litter_size ?? null;
+                                  const notes = match.outcome?.notes ?? null;
+                                  return (
+                                    <button
+                                      type="button"
+                                      className="text-blue-600 hover:underline focus:outline-none"
+                                      onClick={() =>
+                                        setOutcomeDetails({
+                                          matchId: match.id,
+                                          litterSize,
+                                          notes,
+                                        })
+                                      }
+                                    >
+                                      {typeof outcome === "string"
+                                        ? outcome.charAt(0).toUpperCase() + outcome.slice(1)
+                                        : "Success"}
+                                    </button>
+                                  );
+                                })()}
+                              </td>
                             </tr>
                           );
                         })}
@@ -573,6 +601,47 @@ export default function DogProfilePage() {
             setReportOpen(false);
           }}
         />
+
+        {/* Outcome Details Modal */}
+        <Modal
+          open={!!outcomeDetails}
+          onClose={() => setOutcomeDetails(null)}
+          widthClass="max-w-md"
+        >
+          <div className="p-6 space-y-4">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-900">Breeding Outcome Details</h2>
+              <p className="text-sm text-slate-600">
+                Recorded information for this successful breeding.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-700">Outcome</span>
+                <span className="text-sm font-medium text-emerald-700">Success</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-700">Litter size</span>
+                <span className="text-sm font-medium">{outcomeDetails?.litterSize ?? "—"}</span>
+              </div>
+              <div>
+                <div className="text-sm text-slate-700 mb-1">Notes</div>
+                <div className="text-sm text-slate-900 whitespace-pre-wrap">
+                  {outcomeDetails?.notes?.trim()?.length ? outcomeDetails.notes : "—"}
+                </div>
+              </div>
+            </div>
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setOutcomeDetails(null)}
+                className="px-4 py-2 rounded-md border border-slate-300 text-sm hover:bg-slate-50"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </>
   );

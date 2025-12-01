@@ -21,11 +21,38 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
-    const numericLitter = litterSize === "" ? null : Number(litterSize);
+    // Require both notes and litter size to be provided
+    if (litterSize === "") {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { message: "Litter size is required", type: "warning" },
+        })
+      );
+      return;
+    }
+    if (!notes || notes.trim().length === 0) {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { message: "Notes are required", type: "warning" },
+        })
+      );
+      return;
+    }
+    const numericLitter = Number(litterSize);
     if ((numericLitter ?? 0) < 0 || (numericLitter !== null && !Number.isFinite(numericLitter))) {
       window.dispatchEvent(
         new CustomEvent("toast", {
           detail: { message: "Please enter a valid litter size", type: "warning" },
+        })
+      );
+      setBusy(false);
+      return;
+    }
+    // If success, enforce at least 1 pup; for others allow 0
+    if (outcome === "success" && numericLitter < 1) {
+      window.dispatchEvent(
+        new CustomEvent("toast", {
+          detail: { message: "For success, litter size must be at least 1", type: "warning" },
         })
       );
       setBusy(false);
@@ -37,7 +64,7 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
         outcome,
         verifiedDogId: match.myDog?.id,
         litterSize: numericLitter,
-        notes,
+        notes: notes.trim(),
       });
       window.dispatchEvent(
         new CustomEvent("toast", {
@@ -92,7 +119,7 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-800" htmlFor="litter-size-input">
-            Litter size (optional)
+            Litter size
           </label>
           <input
             id="litter-size-input"
@@ -100,13 +127,14 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
             min="0"
             value={litterSize}
             onChange={(e) => setLitterSize(e.target.value)}
+            required
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
           />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-800" htmlFor="outcome-notes">
-            Notes (optional)
+            Notes
           </label>
           <textarea
             id="outcome-notes"
@@ -114,6 +142,7 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Share any helpful observations for future pairings"
+            required
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
           />
         </div>
@@ -129,7 +158,14 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
           </button>
           <button
             type="submit"
-            disabled={busy || !match.myDog?.id}
+            disabled={
+              busy ||
+              !match.myDog?.id ||
+              litterSize === "" ||
+              !notes ||
+              notes.trim().length === 0 ||
+              (outcome === "success" && Number(litterSize) < 1)
+            }
             className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Save outcome"}
