@@ -65,12 +65,25 @@ export async function listMessages(contactId, options = {}) {
 }
 
 // 4) Send a message (kind: 'text' | 'image' | 'file' | 'system')
-export async function sendMessage({ contactId, content, kind = "text", replyTo = null }) {
+export async function sendMessage({
+  contactId,
+  content,
+  kind = "text",
+  replyTo = null,
+  receiverId = null,
+}) {
   const senderId = await getCurrentUserId();
   if (!senderId) throw new Error("Not authenticated");
   const { data, error } = await supabase
     .from("messages")
-    .insert({ contact_id: contactId, sender_id: senderId, content, kind, reply_to: replyTo })
+    .insert({
+      contact_id: contactId,
+      sender_id: senderId,
+      receiver_id: receiverId,
+      content,
+      kind,
+      reply_to: replyTo,
+    })
     .select()
     .single();
   if (error) throw error;
@@ -79,12 +92,12 @@ export async function sendMessage({ contactId, content, kind = "text", replyTo =
 
 // 5) Upload attachment: automatically creates a message then uploads file and adds attachment record
 // Returns { message, attachment, publicUrl:null }
-export async function uploadAttachment({ contactId, file, kind = "image" }) {
+export async function uploadAttachment({ contactId, file, kind = "image", receiverId = null }) {
   if (!file) throw new Error("file required");
   if (!["image", "file"].includes(kind)) throw new Error("Invalid kind for attachment");
 
   // Create the message first (no content required)
-  const message = await sendMessage({ contactId, content: null, kind });
+  const message = await sendMessage({ contactId, content: null, kind, receiverId });
 
   const path = `${contactId}/${message.id}/${file.name}`;
   const bucket = supabase.storage.from("chat-attachments");
@@ -178,6 +191,22 @@ export async function searchMessages(contactId, term) {
   const msgs = await listMessages(contactId, { limit: 500 });
   const t = term.toLowerCase();
   return msgs.filter((m) => (m.content || "").toLowerCase().includes(t));
+}
+
+// 10) Mark messages as read for a contact for current user
+export async function markMessagesAsRead(contactId) {
+  const userId = await getCurrentUserId();
+  if (!userId) return 0;
+  const now = new Date().toISOString();
+  // Prefer read_at; fallback to is_read
+  const { error, data } = await supabase
+    .from("messages")
+    .update({ read_at: now, is_read: true })
+    .eq("contact_id", contactId)
+    .eq("receiver_id", userId)
+    .or("read_at.is.null,is_read.eq.false");
+  if (error) throw error;
+  return Array.isArray(data) ? data.length : 0;
 }
 
 // Edge cases / notes:

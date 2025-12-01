@@ -408,15 +408,18 @@ export default function ChatPage() {
     pinchStateRef.current = { initialDistance: null, initialZoom: 1 };
   };
 
-  const adjustLightboxZoom = (delta) => {
-    setLightboxZoom((prev) => {
-      const next = clamp(prev + delta, 1, 3.5);
-      if (next === 1) {
-        setLightboxOffset({ x: 0, y: 0 });
-      }
-      return next;
-    });
-  };
+  const adjustLightboxZoom = React.useCallback(
+    (delta) => {
+      setLightboxZoom((prev) => {
+        const next = Math.min(3.5, Math.max(1, prev + delta));
+        if (next === 1) {
+          setLightboxOffset({ x: 0, y: 0 });
+        }
+        return next;
+      });
+    },
+    [setLightboxOffset]
+  );
 
   useEffect(() => {
     if (!lightboxImage) return undefined;
@@ -439,7 +442,7 @@ export default function ChatPage() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeydown);
     };
-  }, [lightboxImage]);
+  }, [lightboxImage, adjustLightboxZoom]);
 
   const handleLightboxWheel = (event) => {
     if (!lightboxImage) return;

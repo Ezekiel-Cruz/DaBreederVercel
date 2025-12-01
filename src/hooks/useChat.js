@@ -78,12 +78,14 @@ export default function useChat() {
         }
       }
 
-      // Attach owner names to contacts
+      // Attach owner names and owner ids to contacts
       setContacts(
         contactsRaw.map((c) => ({
           ...c,
           dog_owner_name: ownerMap[dogsMap[c.dog_id]] || "Owner",
           my_dog_owner_name: ownerMap[dogsMap[c.my_dog_id]] || "Owner",
+          dog_owner_id: dogsMap[c.dog_id] || null,
+          my_dog_owner_id: dogsMap[c.my_dog_id] || null,
         }))
       );
     } catch (e) {
@@ -144,12 +146,37 @@ export default function useChat() {
       if (!mountedRef.current) return;
       if (contactId !== activeContactId) return;
       setMessages(normalizeMessages(data));
+      // Mark messages addressed to current user as read on refresh
+      if (currentUserId) {
+        try {
+          await supabase
+            .from("messages")
+            .update({ read_at: new Date().toISOString(), is_read: true })
+            .eq("contact_id", contactId)
+            .eq("receiver_id", currentUserId)
+            .or("read_at.is.null,is_read.eq.false");
+          // Also mark legacy rows (no receiver_id) that belong to this contact and were sent by others
+          await supabase
+            .from("messages")
+            .update({ read_at: new Date().toISOString(), is_read: true })
+            .eq("contact_id", contactId)
+            .is("receiver_id", null)
+            .neq("sender_id", currentUserId)
+            .or("read_at.is.null,is_read.eq.false");
+          // notify sidebar to refresh badge immediately
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("chat:refreshCounts"));
+          }
+        } catch (err) {
+          console.error("markMessagesAsRead failed", err);
+        }
+      }
     } catch (e) {
       console.error("listMessages failed", e);
     } finally {
       if (mountedRef.current && contactId === activeContactId) setLoadingMessages(false);
     }
-  }, [activeContactId, normalizeMessages]);
+  }, [activeContactId, normalizeMessages, currentUserId]);
 
   // Subscribe when activeContactId changes
   useEffect(() => {
@@ -241,7 +268,23 @@ export default function useChat() {
   const sendText = useCallback(
     async (text, kind = "text") => {
       if (!activeContactId) throw new Error("No active contact");
-      const msg = await sendMessage({ contactId: activeContactId, content: text, kind });
+      // Determine receiver id using contact participant ids with dog-owner fallback
+      const thread = contacts.find((c) => c.id === activeContactId);
+      let receiverId = null;
+      if (currentUserId && thread) {
+        if (thread.user_id && thread.owner_id) {
+          receiverId = currentUserId === thread.user_id ? thread.owner_id : thread.user_id;
+        } else if (thread.dog_owner_id || thread.my_dog_owner_id) {
+          receiverId =
+            thread.dog_owner_id === currentUserId ? thread.my_dog_owner_id : thread.dog_owner_id;
+        }
+      }
+      const msg = await sendMessage({
+        contactId: activeContactId,
+        content: text,
+        kind,
+        receiverId,
+      });
       setMessages((prev) => {
         const exists = prev.some((m) => m.id === msg.id);
         if (exists) {
@@ -259,16 +302,28 @@ export default function useChat() {
       );
       return msg;
     },
-    [activeContactId, previewFromMessage]
+    [activeContactId, previewFromMessage, contacts, currentUserId]
   );
 
   const uploadFile = useCallback(
     async (file) => {
       if (!activeContactId) throw new Error("No active contact");
+      // compute receiver for attachment message too
+      const thread = contacts.find((c) => c.id === activeContactId);
+      let receiverId = null;
+      if (currentUserId && thread) {
+        if (thread.user_id && thread.owner_id) {
+          receiverId = currentUserId === thread.user_id ? thread.owner_id : thread.user_id;
+        } else if (thread.dog_owner_id || thread.my_dog_owner_id) {
+          receiverId =
+            thread.dog_owner_id === currentUserId ? thread.my_dog_owner_id : thread.dog_owner_id;
+        }
+      }
       const { message, attachment } = await uploadAttachment({
         contactId: activeContactId,
         file,
         kind: file.type.startsWith("image/") ? "image" : "file",
+        receiverId,
       });
       setMessages((prev) => {
         const exists = prev.some((m) => m.id === message.id);
@@ -287,7 +342,7 @@ export default function useChat() {
       );
       return { message, attachment };
     },
-    [activeContactId, previewFromMessage]
+    [activeContactId, previewFromMessage, contacts, currentUserId]
   );
 
   const deleteMessage = useCallback(

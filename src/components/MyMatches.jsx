@@ -1,4 +1,5 @@
 import "./MyMatches.css"; // warm dog-lover theme
+import "./DogCard.css"; // shared layout styles (container/header/content)
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useDogMatches from "../hooks/useDogMatches";
@@ -213,6 +214,7 @@ function MatchCard({ match, onAccept, onDecline, onCancel, onRecordOutcome, busy
 export default function MyMatches({ userId }) {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 5;
+  const contentRef = React.useRef(null);
 
   const {
     matches,
@@ -345,6 +347,17 @@ export default function MyMatches({ userId }) {
     setPage(1);
   }, [tab, genderFilter]);
 
+  // Ensure we don't land at the bottom when switching tabs/pages
+  React.useEffect(() => {
+    if (contentRef.current) {
+      try {
+        contentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {
+        // noop
+      }
+    }
+  }, [tab, page]);
+
   const handleStatusChange = async (match, status) => {
     setBusyMap((prev) => ({ ...prev, [match.id]: true }));
     try {
@@ -401,7 +414,7 @@ export default function MyMatches({ userId }) {
         <h1 className="page-title">My Matches</h1>
         <p className="page-description">Track requests, confirmations, and outcomes</p>
       </div>
-      <div className="content-section">
+      <div className="content-section" ref={contentRef}>
         <div className="mb-8">
           <div className="summary-grid">
             <SummaryCard label="Pending" value={summary.pending} />

@@ -51,7 +51,7 @@ function NavItem({ icon, label, onClick, active, danger, disabled, to, badge }) 
       <span className="sidebar-icon">{icon}</span>
       <span className="flex-1">{label}</span>
       {showBadge && (
-        <span className="ml-auto inline-flex min-w-[1.5rem] items-center justify-center rounded-full bg-orange-500 px-2 py-0.5 text-xs font-bold text-white shadow-sm">
+        <span className="ml-auto inline-flex min-w-6 items-center justify-center rounded-full bg-orange-500 px-2 py-0.5 text-xs font-bold text-white shadow-sm">
           {badgeValue}
         </span>
       )}
@@ -85,31 +85,65 @@ async function fetchUnreadChatCount(userId, attempt = 0) {
     messageReadColumnPreference === "unknown" ? baseCandidates : [messageReadColumnPreference];
 
   for (const column of columnsToTry) {
-    let query = supabase
-      .from("messages")
-      .select("*", { count: "exact", head: true })
-      .neq("sender_id", userId);
+    // Strategy:
+    // 1) Primary: messages with explicit receiver_id == user and unread
+    // 2) Fallback: legacy rows where receiver_id is null but belong to user's contacts and were sent by others
+    const isUnreadFilter = (q) =>
+      column === "read_at" ? q.is("read_at", null) : q.eq("is_read", false);
 
-    query = column === "read_at" ? query.is("read_at", null) : query.eq("is_read", false);
-
-    const { error, count } = await query;
-
-    if (!error) {
-      persistMessageReadPreference(column);
-      return count || 0;
-    }
-
-    if (error.code === "42703") {
-      missingMessageColumns.add(column);
-      if (column === messageReadColumnPreference) {
-        persistMessageReadPreference("unknown");
-        return fetchUnreadChatCount(userId, attempt + 1);
+    // Primary query
+    try {
+      let q1 = supabase
+        .from("messages")
+        .select("*", { count: "exact", head: true })
+        .eq("receiver_id", userId);
+      q1 = isUnreadFilter(q1);
+      const { error: e1, count: c1 } = await q1;
+      if (e1 && e1.code === "42703") {
+        missingMessageColumns.add(column);
+        continue; // try next column
       }
-      // Column missing, try the next candidate without surfacing an error
-      continue;
+      if (!e1) {
+        // Fallback query for legacy rows (receiver_id null)
+        // Get user's contact ids first
+        let cids = [];
+        try {
+          const { data: contacts, error: ce } = await supabase
+            .from("contacts")
+            .select("id,user_id,owner_id")
+            .or(`user_id.eq.${userId},owner_id.eq.${userId}`);
+          if (!ce && Array.isArray(contacts)) cids = contacts.map((c) => c.id);
+        } catch (e) {
+          void e;
+        }
+        let c2 = 0;
+        if (cids.length) {
+          let q2 = supabase
+            .from("messages")
+            .select("*", { count: "exact", head: true })
+            .in("contact_id", cids)
+            .is("receiver_id", null)
+            .neq("sender_id", userId);
+          q2 = isUnreadFilter(q2);
+          const { error: e2, count: cnt2 } = await q2;
+          if (!e2) c2 = cnt2 || 0;
+          else if (e2.code === "42703") {
+            missingMessageColumns.add(column);
+          }
+        }
+        persistMessageReadPreference(column);
+        return (c1 || 0) + (c2 || 0);
+      }
+    } catch (err) {
+      // fall through to column switch logic
+      void err;
     }
 
-    throw error;
+    // If we reach here and it's due to missing column, failover
+    if (column === messageReadColumnPreference) {
+      persistMessageReadPreference("unknown");
+      return fetchUnreadChatCount(userId, attempt + 1);
+    }
   }
 
   if (messageReadColumnPreference !== "unknown") {
@@ -151,9 +185,18 @@ export default function Sidebar({ open, onClose, user, onLogout }) {
 
     fetchCounts();
 
+    // Listen for chat badge refresh events to update immediately
+    const handleRefresh = () => {
+      fetchCounts();
+    };
+    window.addEventListener("chat:refreshCounts", handleRefresh);
+
     // Set up an interval to refresh counts periodically (e.g., every 30 seconds)
     const interval = setInterval(fetchCounts, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("chat:refreshCounts", handleRefresh);
+    };
   }, [user]);
 
   // When the sidebar closes, ensure no element inside remains focused

@@ -6,6 +6,7 @@ import useDogMatches from "../hooks/useDogMatches";
 import ReportModal from "../components/ReportModal";
 import { useAuth } from "../hooks/useAuth";
 import Modal from "../components/Modal";
+import supabase from "../lib/supabaseClient";
 
 import "./DogProfilePage.css"; // warm dog-lover theme
 import LoadingState from "../components/LoadingState";
@@ -19,6 +20,7 @@ export default function DogProfilePage() {
   const { user } = useAuth();
   const [reportOpen, setReportOpen] = useState(false);
   const [outcomeDetails, setOutcomeDetails] = useState(null);
+  const [outcomeLoading, setOutcomeLoading] = useState(false);
 
   useEffect(() => {
     document.title = dog?.name ? `${dog.name} 🐾 | DaBreeder` : "Dog Profile 🐾 | DaBreeder";
@@ -554,17 +556,52 @@ export default function DogProfilePage() {
                                   if (!isSuccess) return outcome;
                                   const litterSize = match.outcome?.litter_size ?? null;
                                   const notes = match.outcome?.notes ?? null;
+                                  const openDetails = async () => {
+                                    // Use existing outcome if present; otherwise fetch from DB
+                                    if (litterSize !== null || (notes && notes.trim().length)) {
+                                      setOutcomeDetails({ matchId: match.id, litterSize, notes });
+                                      return;
+                                    }
+                                    try {
+                                      setOutcomeLoading(true);
+                                      const { data, error } = await supabase
+                                        .from("dog_match_outcomes")
+                                        .select("litter_size, notes, verified_at")
+                                        .eq("match_id", match.id)
+                                        .order("verified_at", { ascending: false })
+                                        .limit(1)
+                                        .maybeSingle();
+                                      if (error) throw error;
+                                      setOutcomeDetails({
+                                        matchId: match.id,
+                                        litterSize: data?.litter_size ?? null,
+                                        notes: data?.notes ?? null,
+                                      });
+                                    } catch (e) {
+                                      window.dispatchEvent(
+                                        new CustomEvent("toast", {
+                                          detail: {
+                                            message:
+                                              e?.message ||
+                                              "Unable to load outcome details. Please try again.",
+                                            type: "error",
+                                          },
+                                        })
+                                      );
+                                      setOutcomeDetails({
+                                        matchId: match.id,
+                                        litterSize: null,
+                                        notes: null,
+                                      });
+                                    } finally {
+                                      setOutcomeLoading(false);
+                                    }
+                                  };
                                   return (
                                     <button
                                       type="button"
                                       className="text-blue-600 hover:underline focus:outline-none"
-                                      onClick={() =>
-                                        setOutcomeDetails({
-                                          matchId: match.id,
-                                          litterSize,
-                                          notes,
-                                        })
-                                      }
+                                      onClick={openDetails}
                                     >
                                       {typeof outcome === "string"
                                         ? outcome.charAt(0).toUpperCase() + outcome.slice(1)
@@ -602,35 +639,41 @@ export default function DogProfilePage() {
           }}
         />
 
-        {/* Outcome Details Modal */}
+        {/* Outcome Details Modal - system theme */}
         <Modal
           open={!!outcomeDetails}
           onClose={() => setOutcomeDetails(null)}
           widthClass="max-w-md"
         >
-          <div className="p-6 space-y-4">
+          <div className="p-6 space-y-5">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">Breeding Outcome Details</h2>
-              <p className="text-sm text-slate-600">
+              <h2 className="text-xl font-semibold text-slate-900">Breeding Outcome Details</h2>
+              <p className="text-sm text-slate-600 mt-1">
                 Recorded information for this successful breeding.
               </p>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-700">Outcome</span>
-                <span className="text-sm font-medium text-emerald-700">Success</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-700">Litter size</span>
-                <span className="text-sm font-medium">{outcomeDetails?.litterSize ?? "—"}</span>
-              </div>
-              <div>
-                <div className="text-sm text-slate-700 mb-1">Notes</div>
-                <div className="text-sm text-slate-900 whitespace-pre-wrap">
-                  {outcomeDetails?.notes?.trim()?.length ? outcomeDetails.notes : "—"}
+
+            {outcomeLoading ? (
+              <div className="text-sm text-slate-600">Loading details…</div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-700">Outcome</span>
+                  <span className="text-sm font-semibold text-emerald-700">Success</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-slate-700">Litter size</span>
+                  <span className="text-sm font-medium">{outcomeDetails?.litterSize ?? "—"}</span>
+                </div>
+                <div>
+                  <div className="text-sm text-slate-700 mb-1">Notes</div>
+                  <div className="text-sm text-slate-900 whitespace-pre-wrap">
+                    {outcomeDetails?.notes?.trim()?.length ? outcomeDetails.notes : "—"}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
             <div className="pt-2 flex justify-end">
               <button
                 type="button"

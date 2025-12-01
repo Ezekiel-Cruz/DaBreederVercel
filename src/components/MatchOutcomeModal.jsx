@@ -28,6 +28,7 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
           detail: { message: "Litter size is required", type: "warning" },
         })
       );
+      setBusy(false);
       return;
     }
     if (!notes || notes.trim().length === 0) {
@@ -36,6 +37,7 @@ export default function MatchOutcomeModal({ open, onClose, onSubmit, match }) {
           detail: { message: "Notes are required", type: "warning" },
         })
       );
+      setBusy(false);
       return;
     }
     const numericLitter = Number(litterSize);
