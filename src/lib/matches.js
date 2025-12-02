@@ -146,7 +146,12 @@ export function mapMatchRecord(row, userId) {
   const myDog = myselfIsRequester ? row.requester_dog : row.requested_dog;
   const partnerDog = myselfIsRequester ? row.requested_dog : row.requester_dog;
   const myDogGender = (myDog?.gender || "").toString().toLowerCase();
-  const awaitingMyOutcome = row.status === "awaiting_confirmation" && myDogGender === "female";
+
+  // Female dog owners can record all outcomes, male dog owners can only record "no_show"
+  const awaitingMyOutcome =
+    row.status === "awaiting_confirmation" && (myDogGender === "female" || myDogGender === "male");
+  const isMaleDogOwner = myDogGender === "male";
+
   const userStatus = row.status;
   const outcomeRel = row.dog_match_outcomes;
   const outcome = Array.isArray(outcomeRel) ? outcomeRel[0] || null : outcomeRel || null;
@@ -165,6 +170,7 @@ export function mapMatchRecord(row, userId) {
     partnerDog,
     iAmRequester: myselfIsRequester,
     awaitingMyOutcome,
+    isMaleDogOwner, // Add this flag to identify male dog owners
     requiresResponse,
     canCancel,
     outcome,
@@ -257,13 +263,69 @@ export async function submitMatchOutcome({
   if (error) throw error;
   if (!user?.id) throw new Error("Not authenticated");
 
+  // Backend validation to align with RLS/business rules
+  // 1) Ensure the verifying dog exists and belongs to the current user
+  const { data: dog, error: dogErr } = await supabase
+    .from("dogs")
+    .select("id, user_id, gender")
+    .eq("id", verifiedDogId)
+    .single();
+  if (dogErr) throw dogErr;
+  if (!dog) throw new Error("Dog not found");
+  if (String(dog.user_id) !== String(user.id)) {
+    throw new Error("You can only submit outcomes for your own dog");
+  }
+
+  // 2) Ensure the verifying dog is part of the match
+  const { data: match, error: matchErr } = await supabase
+    .from("dog_match_requests")
+    .select("id, requester_dog_id, requested_dog_id, status")
+    .eq("id", matchId)
+    .single();
+  if (matchErr) throw matchErr;
+  if (!match) throw new Error("Match not found");
+  if (
+    String(match.requester_dog_id) !== String(verifiedDogId) &&
+    String(match.requested_dog_id) !== String(verifiedDogId)
+  ) {
+    throw new Error("Selected dog is not part of this match");
+  }
+
+  // 3) Enforce gender-based permissions consistent with RLS
+  const dogGender = (dog.gender || "").toString().toLowerCase();
+  if (dogGender === "male" && outcome !== "no_show") {
+    throw new Error("Male dog's owner may only submit the 'Didn't show up' outcome");
+  }
+
+  // 4) Normalize and validate litter size and notes based on outcome
+  let finalLitterSize = null;
+  const trimmedNotes = (notes || "").trim();
+  if (outcome === "success") {
+    const n = Number(litterSize);
+    if (!Number.isFinite(n) || n < 1) {
+      throw new Error("For success, litter size must be at least 1");
+    }
+    if (!trimmedNotes) {
+      throw new Error("Notes are required for successful breeding");
+    }
+    finalLitterSize = n;
+  } else if (outcome === "failed") {
+    finalLitterSize = 0; // No pregnancy
+    // Notes optional for failed
+  } else if (outcome === "no_show") {
+    finalLitterSize = 0;
+    if (!trimmedNotes) {
+      throw new Error("Notes are required for no show outcome");
+    }
+  }
+
   const payload = {
     match_id: matchId,
     verified_by_user_id: user.id,
     verified_by_dog_id: verifiedDogId,
     outcome,
-    litter_size: typeof litterSize === "number" && Number.isFinite(litterSize) ? litterSize : null,
-    notes: notes || null,
+    litter_size: finalLitterSize,
+    notes: trimmedNotes || null,
   };
 
   const { data, error: insertError } = await supabase

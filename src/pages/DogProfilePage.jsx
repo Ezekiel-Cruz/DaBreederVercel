@@ -521,13 +521,34 @@ export default function DogProfilePage() {
                             match.declined_at ||
                             match.cancelled_at ||
                             match.requested_at;
-                          const outcome =
-                            match.outcome?.outcome ||
-                            (match.status === "completed_success"
-                              ? "Success"
-                              : match.status === "completed_failed"
-                                ? "Failed"
-                                : match.status.charAt(0).toUpperCase() + match.status.slice(1));
+                          // Resolve simplified outcome label per user spec
+                          const rawOutcome = match.outcome?.outcome || null;
+                          let outcomeLabel = null;
+                          // Cancelled from the start: status cancelled with no acceptance / confirmation / completion timestamps
+                          if (
+                            match.status === "cancelled" &&
+                            !match.accepted_at &&
+                            !match.awaiting_confirmation_at &&
+                            !match.completed_at
+                          ) {
+                            outcomeLabel = "Cancelled";
+                          } else if (
+                            rawOutcome === "success" ||
+                            match.status === "completed_success"
+                          ) {
+                            outcomeLabel = "Success";
+                          } else if (rawOutcome === "no_show") {
+                            outcomeLabel = "Didn't show up"; // explicitly show did not show
+                          } else if (
+                            rawOutcome === "failed" ||
+                            match.status === "completed_failed"
+                          ) {
+                            // "Failed" represents no pregnancy
+                            outcomeLabel = "Failed";
+                          } else {
+                            // For other statuses (pending, declined, accepted, awaiting_confirmation) show a dash
+                            outcomeLabel = "—";
+                          }
                           return (
                             <tr key={match.id} className="dog-profile-history-row">
                               <td>{date ? new Date(date).toLocaleDateString() : "—"}</td>
@@ -549,66 +570,122 @@ export default function DogProfilePage() {
                                   .replace("_", " ")}
                               </td>
                               <td>
-                                {(() => {
-                                  const lower = String(outcome).toLowerCase();
-                                  const isSuccess =
-                                    lower === "success" || match.status === "completed_success";
-                                  if (!isSuccess) return outcome;
-                                  const litterSize = match.outcome?.litter_size ?? null;
-                                  const notes = match.outcome?.notes ?? null;
-                                  const openDetails = async () => {
-                                    // Use existing outcome if present; otherwise fetch from DB
-                                    if (litterSize !== null || (notes && notes.trim().length)) {
-                                      setOutcomeDetails({ matchId: match.id, litterSize, notes });
-                                      return;
-                                    }
-                                    try {
-                                      setOutcomeLoading(true);
-                                      const { data, error } = await supabase
-                                        .from("dog_match_outcomes")
-                                        .select("litter_size, notes, verified_at")
-                                        .eq("match_id", match.id)
-                                        .order("verified_at", { ascending: false })
-                                        .limit(1)
-                                        .maybeSingle();
-                                      if (error) throw error;
-                                      setOutcomeDetails({
-                                        matchId: match.id,
-                                        litterSize: data?.litter_size ?? null,
-                                        notes: data?.notes ?? null,
-                                      });
-                                    } catch (e) {
-                                      window.dispatchEvent(
-                                        new CustomEvent("toast", {
-                                          detail: {
-                                            message:
-                                              e?.message ||
-                                              "Unable to load outcome details. Please try again.",
-                                            type: "error",
-                                          },
-                                        })
+                                {outcomeLabel === "Success" ||
+                                outcomeLabel === "Failed" ||
+                                outcomeLabel === "Didn't show up"
+                                  ? (() => {
+                                      const litterSize = match.outcome?.litter_size ?? null;
+                                      const notes = match.outcome?.notes ?? null;
+                                      const openDetails = async () => {
+                                        // If row already contains details, open immediately; resolve verifying owner's name when available
+                                        if (litterSize !== null || (notes && notes.trim().length)) {
+                                          let verifiedOwnerName;
+                                          const vuId = match.outcome?.verified_by_user_id;
+                                          if (vuId) {
+                                            const { data: userRow } = await supabase
+                                              .from("users")
+                                              .select("name")
+                                              .eq("id", vuId)
+                                              .maybeSingle();
+                                            verifiedOwnerName = userRow?.name;
+                                          }
+                                          // Prefer canonical outcome code from row when available
+                                          const canonicalOutcome = match.outcome?.outcome
+                                            ? match.outcome.outcome
+                                            : outcomeLabel === "Failed"
+                                              ? "failed"
+                                              : outcomeLabel === "Success"
+                                                ? "success"
+                                                : outcomeLabel === "Didn't show up"
+                                                  ? "no_show"
+                                                  : null;
+                                          setOutcomeDetails({
+                                            matchId: match.id,
+                                            litterSize,
+                                            notes,
+                                            outcome: canonicalOutcome,
+                                            verifiedOwnerName,
+                                          });
+                                          return;
+                                        }
+                                        try {
+                                          setOutcomeLoading(true);
+                                          const { data, error } = await supabase
+                                            .from("dog_match_outcomes")
+                                            .select(
+                                              "outcome, litter_size, notes, verified_at, verified_by_user_id"
+                                            )
+                                            .eq("match_id", match.id)
+                                            .order("verified_at", { ascending: false })
+                                            .limit(1)
+                                            .maybeSingle();
+                                          if (error) throw error;
+
+                                          let verifiedOwnerName;
+                                          if (data?.verified_by_user_id) {
+                                            const { data: userRow } = await supabase
+                                              .from("users")
+                                              .select("name")
+                                              .eq("id", data.verified_by_user_id)
+                                              .maybeSingle();
+                                            verifiedOwnerName = userRow?.name;
+                                          }
+
+                                          setOutcomeDetails({
+                                            matchId: match.id,
+                                            litterSize: data?.litter_size ?? null,
+                                            notes: data?.notes ?? null,
+                                            outcome:
+                                              data?.outcome ||
+                                              (outcomeLabel === "Failed"
+                                                ? "failed"
+                                                : outcomeLabel === "Success"
+                                                  ? "success"
+                                                  : outcomeLabel === "Didn't show up"
+                                                    ? "no_show"
+                                                    : null),
+                                            verifiedOwnerName,
+                                          });
+                                        } catch (e) {
+                                          window.dispatchEvent(
+                                            new CustomEvent("toast", {
+                                              detail: {
+                                                message:
+                                                  e?.message ||
+                                                  "Unable to load outcome details. Please try again.",
+                                                type: "error",
+                                              },
+                                            })
+                                          );
+                                          setOutcomeDetails({
+                                            matchId: match.id,
+                                            litterSize: null,
+                                            notes: null,
+                                            outcome:
+                                              outcomeLabel === "Failed"
+                                                ? "failed"
+                                                : outcomeLabel === "Success"
+                                                  ? "success"
+                                                  : outcomeLabel === "Didn't show up"
+                                                    ? "no_show"
+                                                    : null,
+                                            verifiedOwnerName: undefined,
+                                          });
+                                        } finally {
+                                          setOutcomeLoading(false);
+                                        }
+                                      };
+                                      return (
+                                        <button
+                                          type="button"
+                                          className={`${outcomeLabel === "Failed" ? "text-rose-600" : outcomeLabel === "Didn't show up" ? "text-amber-700" : "text-blue-600"} hover:underline focus:outline-none`}
+                                          onClick={openDetails}
+                                        >
+                                          {outcomeLabel}
+                                        </button>
                                       );
-                                      setOutcomeDetails({
-                                        matchId: match.id,
-                                        litterSize: null,
-                                        notes: null,
-                                      });
-                                    } finally {
-                                      setOutcomeLoading(false);
-                                    }
-                                  };
-                                  return (
-                                    <button
-                                      type="button"
-                                      className="text-blue-600 hover:underline focus:outline-none"
-                                      onClick={openDetails}
-                                    >
-                                      {typeof outcome === "string"
-                                        ? outcome.charAt(0).toUpperCase() + outcome.slice(1)
-                                        : "Success"}
-                                    </button>
-                                  );
-                                })()}
+                                    })()
+                                  : outcomeLabel}
                               </td>
                             </tr>
                           );
@@ -639,34 +716,71 @@ export default function DogProfilePage() {
           }}
         />
 
-        {/* Outcome Details Modal - system theme */}
+        {/* Outcome Details Modal - warm theme */}
         <Modal
           open={!!outcomeDetails}
           onClose={() => setOutcomeDetails(null)}
           widthClass="max-w-md"
         >
-          <div className="p-6 space-y-5">
-            <div>
-              <h2 className="text-xl font-semibold text-slate-900">Breeding Outcome Details</h2>
+          <div className="p-8 space-y-5 relative">
+            {/* Paw Print Decoration */}
+            <div className="absolute -right-6 -top-6 opacity-5 pointer-events-none">
+              <svg
+                width="180"
+                height="180"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="text-amber-900"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.22-7.52-3.22 3.22 7.52 3.22-7.52-3.22-7.52-3.22 7.52zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm10 0c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+              </svg>
+            </div>
+
+            <div className="relative z-10">
+              <h2 className="text-2xl font-extrabold text-amber-900">Breeding Outcome Details</h2>
               <p className="text-sm text-slate-600 mt-1">
-                Recorded information for this successful breeding.
+                {outcomeDetails?.outcome === "failed"
+                  ? "Recorded information for this breeding (no pregnancy)."
+                  : outcomeDetails?.outcome === "no_show"
+                    ? "Recorded information for this breeding (didn't show up)."
+                    : "Recorded information for this successful breeding."}
               </p>
             </div>
 
             {outcomeLoading ? (
-              <div className="text-sm text-slate-600">Loading details…</div>
+              <div className="text-sm text-slate-600 relative z-10">Loading details…</div>
             ) : (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-700">Outcome</span>
-                  <span className="text-sm font-semibold text-emerald-700">Success</span>
+              <div className="space-y-4 relative z-10">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-orange-50 border border-orange-100">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-900">
+                    Outcome
+                  </span>
+                  <span
+                    className={`text-sm font-bold ${outcomeDetails?.outcome === "failed" ? "text-rose-700" : outcomeDetails?.outcome === "no_show" ? "text-amber-700" : "text-emerald-700"}`}
+                  >
+                    {outcomeDetails?.outcome === "failed"
+                      ? "Failed"
+                      : outcomeDetails?.outcome === "no_show"
+                        ? "Didn't show up"
+                        : "Success"}
+                  </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-700">Litter size</span>
-                  <span className="text-sm font-medium">{outcomeDetails?.litterSize ?? "—"}</span>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-700 mb-1">Notes</div>
+                {outcomeDetails?.outcome !== "no_show" && (
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-orange-50 border border-orange-100">
+                    <span className="text-xs font-bold uppercase tracking-wider text-amber-900">
+                      Litter size
+                    </span>
+                    <span className="text-sm font-bold text-slate-900">
+                      {outcomeDetails?.litterSize ?? "—"}
+                    </span>
+                  </div>
+                )}
+                <div className="p-4 rounded-xl bg-orange-50 border border-orange-100">
+                  <div className="text-xs font-bold uppercase tracking-wider text-amber-900 mb-2">
+                    Note by{" "}
+                    {outcomeDetails?.verifiedOwnerName ? outcomeDetails.verifiedOwnerName : "Owner"}{" "}
+                    (Dog Owner)
+                  </div>
                   <div className="text-sm text-slate-900 whitespace-pre-wrap">
                     {outcomeDetails?.notes?.trim()?.length ? outcomeDetails.notes : "—"}
                   </div>
@@ -674,11 +788,11 @@ export default function DogProfilePage() {
               </div>
             )}
 
-            <div className="pt-2 flex justify-end">
+            <div className="pt-2 flex justify-end relative z-10">
               <button
                 type="button"
                 onClick={() => setOutcomeDetails(null)}
-                className="px-4 py-2 rounded-md border border-slate-300 text-sm hover:bg-slate-50"
+                className="px-6 py-3 rounded-xl bg-linear-to-r from-orange-400 to-amber-500 text-sm font-bold uppercase tracking-wide text-white shadow-lg hover:from-orange-500 hover:to-amber-600 transition-all transform active:scale-95"
               >
                 Close
               </button>
