@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo, useState } from "react";
 import {
   Users,
   Search,
@@ -42,51 +41,18 @@ import supabase from "../lib/supabaseClient";
 import { sendBanNotificationEmail } from "../lib/banNotification";
 import { useAdminData } from "../hooks/useAdminData";
 import { fetchAdminUsers } from "../lib/api/admin";
+import useAdminGuard from "../hooks/useAdminGuard";
 
 export default function AdminUsersPage() {
-  const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [actionType, setActionType] = useState("");
   const [banReason, setBanReason] = useState("");
   const [showBanReasonModal, setShowBanReasonModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [authChecking, setAuthChecking] = useState(true);
-  const [authorized, setAuthorized] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function checkAdminAccess() {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!session) {
-          navigate("/admin");
-          return;
-        }
-        const { data: profile } = await supabase
-          .from("users")
-          .select("role")
-          .eq("id", session.user.id)
-          .single();
-        if (profile?.role !== "admin") {
-          navigate("/admin");
-          return;
-        }
-        if (!cancelled) setAuthorized(true);
-      } catch (err) {
-        console.error("Failed to verify admin session:", err);
-        if (!cancelled) navigate("/admin");
-      } finally {
-        if (!cancelled) setAuthChecking(false);
-      }
-    }
-    checkAdminAccess();
-    return () => {
-      cancelled = true;
-    };
-  }, [navigate]);
+  const { checking: authChecking, authorized } = useAdminGuard({
+    profileSelect: "role",
+  });
 
   const {
     rows: users = [],

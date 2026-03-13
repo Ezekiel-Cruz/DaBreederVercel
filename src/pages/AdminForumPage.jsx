@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Search,
   Trash2,
@@ -19,7 +18,6 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import supabase from "../lib/supabaseClient";
 import ConfirmDialog from "../components/ConfirmDialog";
-import AdminLoadingScreen from "../components/AdminLoadingScreen";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
@@ -29,9 +27,10 @@ import { Skeleton } from "../components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { Separator } from "../components/ui/separator";
+import useAdminGuard from "../hooks/useAdminGuard";
 
 export default function AdminForumPage() {
-  const navigate = useNavigate();
+  const { checking: authChecking, authorized } = useAdminGuard({ profileSelect: "role" });
   const [threads, setThreads] = useState([]);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,37 +55,9 @@ export default function AdminForumPage() {
   }, [searchTerm, view]);
 
   useEffect(() => {
-    checkAdminAccess();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const checkAdminAccess = async () => {
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) {
-        navigate("/admin");
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from("users")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
-
-      if (profile?.role !== "admin") {
-        navigate("/admin");
-        return;
-      }
-
-      await fetchForumData();
-    } catch (err) {
-      console.error("Admin access check failed:", err);
-      navigate("/admin");
-    }
-  };
+    if (!authorized) return;
+    fetchForumData();
+  }, [authorized]);
 
   const fetchForumData = async () => {
     try {
@@ -334,7 +305,7 @@ export default function AdminForumPage() {
     window.open(`/thread/${threadId}`, "_blank");
   };
 
-  if (loading) {
+  if (authChecking || loading) {
     return (
       <div className="space-y-6 p-6">
         <div className="flex items-center justify-between">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import MyDogs from "../components/MyDogs";
 import { useAuth } from "../hooks/useAuth";
 import { Navigate, useNavigate } from "react-router-dom";
+import LoadingState from "../components/LoadingState";
 
 export default function MyDogPage() {
   const { user, loading } = useAuth();
@@ -12,8 +13,9 @@ export default function MyDogPage() {
     document.title = "My Dogs 🐾 | DaBreeder";
   }, []);
 
-  // While auth is resolving, render nothing (or a spinner if desired)
-  if (loading) return null;
+  if (loading) {
+    return <LoadingState message="Loading your dogs..." minHeight={240} />;
+  }
 
   // After loading: if not authenticated, redirect declaratively
   if (!user) return <Navigate to="/" replace />;

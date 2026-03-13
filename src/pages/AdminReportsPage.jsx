@@ -52,6 +52,7 @@ import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 import { Skeleton } from "../components/ui/skeleton";
 import { toast } from "sonner";
+import useAdminGuard from "../hooks/useAdminGuard";
 
 const STATUS_COLORS = {
   open: "destructive",
@@ -165,6 +166,7 @@ const ReportsSkeleton = () => (
 );
 
 export default function AdminReportsPage() {
+  const { checking: authChecking, authorized } = useAdminGuard({ profileSelect: "role" });
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -219,8 +221,9 @@ export default function AdminReportsPage() {
   }, []);
 
   useEffect(() => {
+    if (!authorized) return;
     fetchReports();
-  }, [fetchReports]);
+  }, [authorized, fetchReports]);
 
   const filteredReports = useMemo(() => {
     return reports.filter((report) => {
@@ -370,7 +373,7 @@ export default function AdminReportsPage() {
     }
   };
 
-  if (loading) {
+  if (authChecking || loading) {
     return <ReportsSkeleton />;
   }
 

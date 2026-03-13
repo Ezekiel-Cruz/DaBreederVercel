@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter } from "./ui/sidebar";
 import {
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import supabase from "../lib/supabaseClient";
+import useAdminGuard from "../hooks/useAdminGuard";
 
 const navItems = [
   { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -25,69 +26,26 @@ const navItems = [
 ];
 
 export default function AdminLayout() {
-  const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [adminUser, setAdminUser] = useState(null);
-  const [initializing, setInitializing] = useState(true);
+  const { checking, profile } = useAdminGuard({
+    profileSelect: "role,name,email",
+    signOutOnUnauthorized: true,
+  });
+
+  const adminUser = profile
+    ? {
+        name: profile.name || "Admin",
+        email: profile.email || "",
+      }
+    : null;
+
   const currentNavItem = navItems.find((item) => location.pathname.startsWith(item.path)) || {};
 
   // Close the drawer when navigating to a new admin route
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
-
-  // Load admin identity once so the sidebar can display details
-  useEffect(() => {
-    let active = true;
-    const loadAdmin = async () => {
-      try {
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
-
-        if (error) throw error;
-
-        if (!session) {
-          navigate("/admin", { replace: true });
-          return;
-        }
-
-        const { data: profile, error: profileError } = await supabase
-          .from("users")
-          .select("name, email, role")
-          .eq("id", session.user.id)
-          .maybeSingle();
-
-        if (profileError) throw profileError;
-
-        if (profile?.role !== "admin") {
-          await supabase.auth.signOut();
-          navigate("/admin", { replace: true });
-          return;
-        }
-
-        if (active) {
-          setAdminUser({
-            name: profile.name || "Admin",
-            email: profile.email || session.user.email,
-          });
-          setInitializing(false);
-        }
-      } catch (err) {
-        console.error("Failed to prepare admin layout:", err);
-        navigate("/admin", { replace: true });
-      } finally {
-        if (active) setInitializing(false);
-      }
-    };
-
-    loadAdmin();
-    return () => {
-      active = false;
-    };
-  }, [navigate]);
 
   const handleSignOut = async () => {
     try {
@@ -112,7 +70,7 @@ export default function AdminLayout() {
     }
   };
 
-  if (initializing) {
+  if (checking) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <div className="flex flex-col items-center space-y-4">

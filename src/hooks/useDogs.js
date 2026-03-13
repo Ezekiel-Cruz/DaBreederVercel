@@ -3,10 +3,16 @@ import supabase from "../lib/supabaseClient";
 import { AuthContext } from "../context/AuthContext";
 import React from "react";
 import { fetchDogsForUser, mapDogRow } from "../lib/dogQueries";
+import {
+  DOGS_CACHE_TTL_MS,
+  dogsStorageKey,
+  getDogsCacheEntry,
+  setDogsCacheEntry,
+  userCacheKey,
+} from "../lib/appCache";
 
 // Simple per-user cache to avoid refetching on quick navigations
-const DOGS_CACHE = (globalThis.__DB_DOGS_CACHE__ = globalThis.__DB_DOGS_CACHE__ || {});
-const FIVE_MIN = 5 * 60 * 1000;
+const FIVE_MIN = DOGS_CACHE_TTL_MS;
 
 export default function useDogs(options = {}) {
   const { user, sessionReady } = React.useContext(AuthContext) || {};
@@ -21,11 +27,11 @@ export default function useDogs(options = {}) {
   const hydratedFromStorageRef = useRef(false);
   const emptyRetryRef = useRef(false);
 
-  const cacheKey = useMemo(() => (userId ? `u:${userId}` : "anon"), [userId]);
-  const storageKey = useMemo(() => (userId ? `db:dogs:${userId}` : null), [userId]);
+  const cacheKey = useMemo(() => userCacheKey(userId), [userId]);
+  const storageKey = useMemo(() => dogsStorageKey(userId), [userId]);
 
   const applyCacheSnapshot = useCallback(() => {
-    const cache = DOGS_CACHE[cacheKey];
+    const cache = getDogsCacheEntry(cacheKey);
     if (cache?.dogs) {
       lastSuccessfulDogsRef.current = cache.dogs;
       setDogs(cache.dogs);
@@ -58,11 +64,11 @@ export default function useDogs(options = {}) {
         if (Array.isArray(parsed?.dogs)) {
           setDogs(parsed.dogs);
           lastSuccessfulDogsRef.current = parsed.dogs;
-          DOGS_CACHE[cacheKey] = {
+          setDogsCacheEntry(cacheKey, {
             dogs: parsed.dogs,
             lastFetch: 0,
             error: null,
-          };
+          });
         }
       }
     } catch (err) {
@@ -99,7 +105,7 @@ export default function useDogs(options = {}) {
         return lastSuccessfulDogsRef.current;
       }
 
-      const cache = DOGS_CACHE[cacheKey];
+      const cache = getDogsCacheEntry(cacheKey);
       const freshEnough = cache && Date.now() - (cache.lastFetch || 0) < FIVE_MIN;
       const cacheHasError = !!cache?.error;
       if (!force && freshEnough && !cacheHasError) {
@@ -132,16 +138,16 @@ export default function useDogs(options = {}) {
           }
         }
 
-        DOGS_CACHE[cacheKey] = { dogs: rows, lastFetch: Date.now(), error: null };
+        setDogsCacheEntry(cacheKey, { dogs: rows, lastFetch: Date.now(), error: null });
         lastSuccessfulDogsRef.current = rows;
         setDogs(rows);
         return rows;
       } catch (e) {
-        DOGS_CACHE[cacheKey] = {
+        setDogsCacheEntry(cacheKey, {
           dogs: lastSuccessfulDogsRef.current,
           lastFetch: 0,
           error: e,
-        };
+        });
         setError(e);
         if (lastSuccessfulDogsRef.current.length > 0) {
           setDogs(lastSuccessfulDogsRef.current);
@@ -264,11 +270,11 @@ export default function useDogs(options = {}) {
               const next = exists
                 ? prev.map((d) => (d.id === mapped.id ? { ...d, ...mapped } : d))
                 : [mapped, ...prev];
-              DOGS_CACHE[cacheKey] = {
+              setDogsCacheEntry(cacheKey, {
                 dogs: next,
                 lastFetch: Date.now(),
                 error: null,
-              };
+              });
               lastSuccessfulDogsRef.current = next;
               return next;
             });
@@ -277,11 +283,11 @@ export default function useDogs(options = {}) {
             if (!mapped?.id) return;
             setDogs((prev) => {
               const next = prev.map((d) => (d.id === mapped.id ? { ...d, ...mapped } : d));
-              DOGS_CACHE[cacheKey] = {
+              setDogsCacheEntry(cacheKey, {
                 dogs: next,
                 lastFetch: Date.now(),
                 error: null,
-              };
+              });
               lastSuccessfulDogsRef.current = next;
               return next;
             });
@@ -290,11 +296,11 @@ export default function useDogs(options = {}) {
             if (!delId) return;
             setDogs((prev) => {
               const next = prev.filter((d) => d.id !== delId);
-              DOGS_CACHE[cacheKey] = {
+              setDogsCacheEntry(cacheKey, {
                 dogs: next,
                 lastFetch: Date.now(),
                 error: null,
-              };
+              });
               lastSuccessfulDogsRef.current = next;
               return next;
             });
@@ -329,10 +335,12 @@ export default function useDogs(options = {}) {
         setDogs((prev) => prev.map((d) => (d.id === dogId ? { ...d, is_visible: isVisible } : d)));
 
         // Update cache
-        if (DOGS_CACHE[cacheKey]) {
-          DOGS_CACHE[cacheKey].dogs = DOGS_CACHE[cacheKey].dogs.map((d) =>
-            d.id === dogId ? { ...d, is_visible: isVisible } : d
-          );
+        const existing = getDogsCacheEntry(cacheKey);
+        if (existing?.dogs) {
+          setDogsCacheEntry(cacheKey, {
+            ...existing,
+            dogs: existing.dogs.map((d) => (d.id === dogId ? { ...d, is_visible: isVisible } : d)),
+          });
         }
 
         return { success: true };
@@ -355,8 +363,12 @@ export default function useDogs(options = {}) {
         setDogs((prev) => prev.filter((d) => d.id !== dogId));
 
         // Update cache
-        if (DOGS_CACHE[cacheKey]) {
-          DOGS_CACHE[cacheKey].dogs = DOGS_CACHE[cacheKey].dogs.filter((d) => d.id !== dogId);
+        const existing = getDogsCacheEntry(cacheKey);
+        if (existing?.dogs) {
+          setDogsCacheEntry(cacheKey, {
+            ...existing,
+            dogs: existing.dogs.filter((d) => d.id !== dogId),
+          });
         }
 
         return { success: true };

@@ -2,16 +2,13 @@ import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import supabase from "../lib/supabaseClient";
 import { upsertUserProfile } from "../lib/profile";
 import { fetchDogsForUser } from "../lib/dogQueries";
+import { getDogsCacheEntry, setDogsCacheEntry, userCacheKey } from "../lib/appCache";
 
 import BannedUserModal from "../components/BannedUserModal";
 
 const AuthContext = createContext();
 
 export { AuthContext };
-
-const DOGS_CACHE = (globalThis.__DB_DOGS_CACHE__ = globalThis.__DB_DOGS_CACHE__ || {});
-
-const cacheKeyForUser = (userId) => (userId ? `u:${userId}` : "anon");
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -95,17 +92,17 @@ export default function AuthProvider({ children }) {
   // Prefetch user's dogs into the global cache to warm other pages (FindMatch, MyDogs)
   const prefetchUserDogs = useCallback(async (userId) => {
     if (!userId) return;
-    const cacheKey = cacheKeyForUser(userId);
+    const cacheKey = userCacheKey(userId);
     try {
-      const existing = DOGS_CACHE[cacheKey];
+      const existing = getDogsCacheEntry(cacheKey);
       if (existing && Date.now() - (existing.lastFetch || 0) < 15 * 60 * 1000) return;
       const mapped = await fetchDogsForUser(userId);
       const normalized = mapped || [];
-      DOGS_CACHE[cacheKey] = {
+      setDogsCacheEntry(cacheKey, {
         dogs: normalized,
         lastFetch: Date.now(),
         error: null,
-      };
+      });
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("dogs:cache-prefetched", { detail: { userId } }));
       }

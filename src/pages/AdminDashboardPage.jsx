@@ -25,11 +25,13 @@ import { ScrollArea } from "../components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import supabase from "../lib/supabaseClient";
 import { useAuth } from "../hooks/useAuth";
+import useAdminGuard from "../hooks/useAdminGuard";
 
 const POLL_MS = 30000;
 
 export default function AdminDashboardPage() {
   const { user } = useAuth();
+  const { checking: authChecking, authorized } = useAdminGuard({ profileSelect: "role" });
   const [verificationStatus, setVerificationStatus] = useState(null);
   // Check if the current user is waiting for verification
   useEffect(() => {
@@ -270,10 +272,11 @@ export default function AdminDashboardPage() {
   }, []);
 
   useEffect(() => {
+    if (!authorized) return undefined;
     loadData();
     const interval = setInterval(loadData, POLL_MS);
     return () => clearInterval(interval);
-  }, [loadData]);
+  }, [authorized, loadData]);
 
   const handleRefresh = () => {
     loadData();
@@ -328,7 +331,7 @@ export default function AdminDashboardPage() {
     );
   };
 
-  if (loading) {
+  if (authChecking || loading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">

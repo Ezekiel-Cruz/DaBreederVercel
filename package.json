@@ -12,7 +12,6 @@
     "format:check": "prettier . --check",
     "prepare": "husky",
     "preview": "vite preview",
-    "test": "vitest --run",
     "test:watch": "vitest"
   },
   "dependencies": {

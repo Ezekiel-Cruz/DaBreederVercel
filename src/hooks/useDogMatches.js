@@ -8,22 +8,29 @@ import {
   submitMatchOutcome,
   updateMatchStatus,
 } from "../lib/matches";
+import {
+  deleteMatchesCacheEntry,
+  getMatchesCacheEntry,
+  MATCHES_CACHE_TTL_MS,
+  matchesCacheKey,
+  matchesStorageKey,
+  setMatchesCacheEntry,
+} from "../lib/appCache";
 
-const CACHE = (globalThis.__DB_MATCHES_CACHE__ = globalThis.__DB_MATCHES_CACHE__ || {});
-const TTL = 2 * 60 * 1000; // 2 minutes
+const TTL = MATCHES_CACHE_TTL_MS;
 
 export default function useDogMatches(options = {}) {
   const { user } = useContext(AuthContext) || {};
   const userId = options.userId || user?.id || null;
-  const cacheKey = userId ? `matches:${userId}` : "anon";
+  const cacheKey = matchesCacheKey(userId);
 
-  const [matches, setMatches] = useState(() => CACHE[cacheKey]?.matches || []);
+  const [matches, setMatches] = useState(() => getMatchesCacheEntry(cacheKey)?.matches || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const activeRef = useRef(0);
-  const matchesRef = useRef(CACHE[cacheKey]?.matches || []);
-  const storageKey = userId ? `db:matches:${userId}` : null;
+  const matchesRef = useRef(getMatchesCacheEntry(cacheKey)?.matches || []);
+  const storageKey = matchesStorageKey(userId);
 
   useEffect(() => {
     if (!storageKey || typeof window === "undefined") return;
@@ -59,7 +66,7 @@ export default function useDogMatches(options = {}) {
         setLoading(false);
         return [];
       }
-      const cache = CACHE[cacheKey];
+      const cache = getMatchesCacheEntry(cacheKey);
       const fresh = cache && Date.now() - cache.fetchedAt < TTL;
       if (!force && fresh) {
         setMatches(cache.matches || []);
@@ -75,16 +82,16 @@ export default function useDogMatches(options = {}) {
         const mapped = rows.map((row) => mapMatchRecord(row, userId));
         if (activeRef.current !== requestId) return mapped;
         const fetchedAt = Date.now();
-        CACHE[cacheKey] = { matches: mapped, fetchedAt, error: null };
+        setMatchesCacheEntry(cacheKey, { matches: mapped, fetchedAt, error: null });
         setMatches(mapped);
         return mapped;
       } catch (err) {
         if (activeRef.current !== requestId) return [];
-        CACHE[cacheKey] = {
+        setMatchesCacheEntry(cacheKey, {
           matches: matchesRef.current,
           fetchedAt: Date.now(),
           error: err,
-        };
+        });
         setError(err);
         if (matchesRef.current.length) {
           setMatches(matchesRef.current);
@@ -215,7 +222,7 @@ export default function useDogMatches(options = {}) {
   const changeStatus = useCallback(
     async (matchId, status) => {
       await updateMatchStatus(matchId, status);
-      delete CACHE[cacheKey];
+      deleteMatchesCacheEntry(cacheKey);
       await load(true);
     },
     [cacheKey, load]
@@ -224,7 +231,7 @@ export default function useDogMatches(options = {}) {
   const acceptMatch = useCallback(
     async (matchId) => {
       await acceptMatchRequest(matchId);
-      delete CACHE[cacheKey];
+      deleteMatchesCacheEntry(cacheKey);
       await load(true);
     },
     [cacheKey, load]
@@ -233,7 +240,7 @@ export default function useDogMatches(options = {}) {
   const recordOutcome = useCallback(
     async ({ matchId, outcome, verifiedDogId, litterSize, notes }) => {
       await submitMatchOutcome({ matchId, outcome, verifiedDogId, litterSize, notes });
-      delete CACHE[cacheKey];
+      deleteMatchesCacheEntry(cacheKey);
       await load(true);
     },
     [cacheKey, load]

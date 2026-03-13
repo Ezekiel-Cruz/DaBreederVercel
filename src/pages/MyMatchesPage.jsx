@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import MyMatches from "../components/MyMatches";
+import LoadingState from "../components/LoadingState";
 
 export default function MyMatchesPage() {
   const { user, loading } = useAuth();
@@ -11,7 +12,9 @@ export default function MyMatchesPage() {
     document.title = "My Matches 🐾 | DaBreeder";
   }, []);
 
-  if (loading) return null;
+  if (loading) {
+    return <LoadingState message="Loading your matches..." minHeight={240} />;
+  }
   if (!user) return <Navigate to="/" replace />;
   if (user.role === "admin") {
     navigate("/admin/dashboard", { replace: true });

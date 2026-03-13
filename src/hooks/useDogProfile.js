@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import supabase from "../lib/supabaseClient";
+import { DOGS_STORAGE_PREFIX, dogDetailStorageKey, getDogsCache } from "../lib/appCache";
 
 function parseDogId(dogId) {
   return dogId != null ? String(dogId) : null;
@@ -8,7 +9,7 @@ function parseDogId(dogId) {
 function readDogFromDetailCache(dogId) {
   if (typeof window === "undefined" || !dogId) return null;
   try {
-    const raw = window.localStorage.getItem(`db:dog:${dogId}`);
+    const raw = window.localStorage.getItem(dogDetailStorageKey(dogId));
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return parsed?.dog || null;
@@ -20,7 +21,10 @@ function readDogFromDetailCache(dogId) {
 function writeDogToDetailCache(dogId, dog) {
   if (typeof window === "undefined" || !dogId || !dog) return;
   try {
-    window.localStorage.setItem(`db:dog:${dogId}`, JSON.stringify({ dog, ts: Date.now() }));
+    window.localStorage.setItem(
+      dogDetailStorageKey(dogId),
+      JSON.stringify({ dog, ts: Date.now() })
+    );
   } catch {
     /* ignore quota errors */
   }
@@ -29,7 +33,7 @@ function writeDogToDetailCache(dogId, dog) {
 function readDogFromGlobalCache(dogId) {
   if (!dogId) return null;
   try {
-    const cache = globalThis.__DB_DOGS_CACHE__;
+    const cache = getDogsCache();
     if (cache && typeof cache === "object") {
       for (const key of Object.keys(cache)) {
         const list = cache[key]?.dogs;
@@ -46,7 +50,7 @@ function readDogFromGlobalCache(dogId) {
   try {
     for (let i = 0; i < window.localStorage.length; i += 1) {
       const key = window.localStorage.key(i);
-      if (!key || !key.startsWith("db:dogs:")) continue;
+      if (!key || !key.startsWith(DOGS_STORAGE_PREFIX)) continue;
       try {
         const parsed = JSON.parse(window.localStorage.getItem(key));
         if (!parsed?.dogs) continue;

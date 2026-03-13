@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Search,
   Trash2,
@@ -27,7 +26,6 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import supabase from "../lib/supabaseClient";
-import AdminLoadingScreen from "../components/AdminLoadingScreen";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import {
@@ -64,9 +62,10 @@ import {
 import { ScrollArea } from "../components/ui/scroll-area";
 import { Separator } from "../components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
+import useAdminGuard from "../hooks/useAdminGuard";
 
 export default function AdminDogsPage() {
-  const navigate = useNavigate();
+  const { checking: authChecking, authorized } = useAdminGuard({ profileSelect: "role" });
   const [dogs, setDogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -130,49 +129,9 @@ export default function AdminDogsPage() {
   }, [searchTerm, filterDocuments]);
 
   useEffect(() => {
-    checkAdminAccess();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const checkAdminAccess = async () => {
-    try {
-      console.log("AdminDogsPage: Checking admin access...");
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-
-      console.log("Session:", session ? "Found" : "Not found", sessionError);
-
-      if (!session) {
-        console.log("No session, redirecting to /admin");
-        navigate("/admin");
-        return;
-      }
-
-      console.log("User ID:", session.user.id);
-
-      const { data: profile, error: profileError } = await supabase
-        .from("users")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
-
-      console.log("Profile role:", profile?.role, profileError);
-
-      if (profile?.role !== "admin") {
-        console.log("Not an admin, redirecting to /admin");
-        navigate("/admin");
-        return;
-      }
-
-      console.log("Admin access confirmed, fetching dogs");
-      await fetchDogs();
-    } catch (err) {
-      console.error("Admin access check failed:", err);
-      navigate("/admin");
-    }
-  };
+    if (!authorized) return;
+    fetchDogs();
+  }, [authorized]);
 
   // Removed stray <table> block outside the component
   // Removed orphaned closing braces from previous patch
@@ -259,7 +218,7 @@ export default function AdminDogsPage() {
     openDocModal(dog);
   };
 
-  if (loading) {
+  if (authChecking || loading) {
     return (
       <div className="space-y-6 p-6">
         <div className="flex items-center justify-between">

@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { format, formatDistanceToNow } from "date-fns";
 import {
   ArrowLeft,
@@ -60,6 +59,7 @@ import {
 } from "../components/ui/dialog";
 import { Separator } from "../components/ui/separator";
 import { Label } from "../components/ui/label";
+import useAdminGuard from "../hooks/useAdminGuard";
 
 // Utility function to format dates
 const formatDate = (dateString) => {
@@ -151,7 +151,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className = "" }) =
 };
 
 export default function AdminMessagesPage() {
-  const navigate = useNavigate();
+  const { checking: authChecking, authorized } = useAdminGuard({ profileSelect: "role" });
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -167,49 +167,9 @@ export default function AdminMessagesPage() {
   });
 
   useEffect(() => {
-    checkAdminAccess();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const checkAdminAccess = async () => {
-    try {
-      console.log("AdminMessagesPage: Checking admin access...");
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-
-      console.log("Session:", session ? "Found" : "Not found", sessionError);
-
-      if (!session) {
-        console.log("No session, redirecting to /admin");
-        navigate("/admin");
-        return;
-      }
-
-      console.log("User ID:", session.user.id);
-
-      const { data: profile, error: profileError } = await supabase
-        .from("users")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
-
-      console.log("Profile role:", profile?.role, profileError);
-
-      if (profile?.role !== "admin") {
-        console.log("Not an admin, redirecting to /admin");
-        navigate("/admin");
-        return;
-      }
-
-      console.log("Admin access confirmed, fetching messages");
-      await fetchMessages();
-    } catch (err) {
-      console.error("Admin access check failed:", err);
-      navigate("/admin");
-    }
-  };
+    if (!authorized) return;
+    fetchMessages();
+  }, [authorized]);
 
   const fetchMessages = async () => {
     try {
@@ -499,7 +459,7 @@ export default function AdminMessagesPage() {
           </CardHeader>
 
           <div className="relative">
-            {loading ? (
+            {authChecking || loading ? (
               <div className="p-6">
                 <LoadingSkeleton rows={8} />
               </div>
