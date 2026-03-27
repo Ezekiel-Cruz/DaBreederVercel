@@ -1,13 +1,13 @@
-/* Auth Modal - Warm Dog Lover Theme 🐾 */
+﻿/* Auth Modal - Warm Dog Lover Theme  */
 
 /* Form Container */
 .auth-form-container {
-  background: linear-gradient(145deg, #fffbf5 0%, #fef9f3 100%);
+  background: linear-gradient(145deg, #fff9f1 0%, #fff4e8 100%);
   position: relative;
 }
 
 .auth-form-container::before {
-  content: "🐾";
+  content: "";
   position: absolute;
   top: 20px;
   left: 20px;
@@ -18,7 +18,7 @@
 }
 
 .auth-form-container::after {
-  content: "🐾";
+  content: "";
   position: absolute;
   bottom: 20px;
   right: 20px;
@@ -30,19 +30,19 @@
 
 /* Header */
 .auth-header h2 {
-  color: #7c2d12;
+  color: #5b4a45;
   font-weight: 900;
-  text-shadow: 0 2px 4px rgba(251, 146, 60, 0.1);
+  text-shadow: 0 2px 4px rgba(110, 86, 68, 0.08);
 }
 
 .auth-header p {
-  color: #9a3412;
+  color: #7c6a62;
   font-weight: 600;
 }
 
 /* Form Inputs */
 .auth-input-label {
-  color: #7c2d12;
+  color: #685750;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -50,9 +50,9 @@
 }
 
 .auth-input {
-  border: 2px solid #fef3e8;
-  background: linear-gradient(to right, #ffffff, #fffbf5);
-  color: #431407;
+  border: 1px solid #e9d8c3;
+  background: #fffaf2;
+  color: #5f4f49;
   font-weight: 600;
   border-radius: 12px;
   padding: 0.75rem 1rem;
@@ -60,47 +60,47 @@
 }
 
 .auth-input:hover {
-  border-color: #fed7aa;
+  border-color: #e3cfb5;
 }
 
 .auth-input:focus {
   outline: none;
-  border-color: #fb923c;
-  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.15);
+  border-color: #efb2a1;
+  box-shadow: 0 0 0 3px rgba(241, 178, 161, 0.25);
   background: white;
 }
 
 .auth-input::placeholder {
-  color: #d97706;
+  color: #9a8479;
   opacity: 0.5;
 }
 
 /* Password Toggle Button */
 .password-toggle {
-  color: #9a3412;
+  color: #7c6a62;
   transition: color 0.2s ease;
 }
 
 .password-toggle:hover {
-  color: #fb923c;
+  color: #5b4a45;
 }
 
 /* Forgot Password Link */
 .forgot-password-link {
-  color: #9a3412;
+  color: #7f5f52;
   font-weight: 600;
   transition: color 0.2s ease;
 }
 
 .forgot-password-link:hover {
-  color: #fb923c;
+  color: #5b4a45;
   transition: color 0.2s ease;
 }
 
 /* Checkbox */
 .auth-checkbox {
-  accent-color: #fb923c;
-  border: 2px solid #fed7aa;
+  accent-color: #f0a08f;
+  border: 2px solid #e3cfb5;
   border-radius: 4px;
 }
 
@@ -109,20 +109,20 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.75rem;
-  color: #9a3412;
+  color: #7c6a62;
   font-weight: 600;
   margin-top: 0.25rem;
 }
 
 /* Terms Link */
 .terms-link {
-  color: #9a3412;
+  color: #7f5f52;
   font-weight: 700;
   transition: color 0.2s ease;
 }
 
 .terms-link:hover {
-  color: #fb923c;
+  color: #5b4a45;
 }
 
 /* Error Message */
@@ -137,9 +137,9 @@
 
 /* Info Message */
 .auth-info {
-  background: linear-gradient(145deg, #dbeafe, #bfdbfe);
-  border: 2px solid #93c5fd;
-  color: #1e40af;
+  background: linear-gradient(145deg, #fff4e7, #fbe7d2);
+  border: 2px solid #eccaa7;
+  color: #7f5f52;
   font-weight: 600;
   border-radius: 12px;
   padding: 0.75rem;
@@ -147,22 +147,22 @@
 
 /* Submit Button */
 .auth-submit-btn {
-  background: linear-gradient(135deg, #fb923c, #f97316);
+  background: linear-gradient(135deg, #f7b6aa, #f0a08f);
   color: white;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-radius: 16px;
   padding: 0.875rem 1.5rem;
-  box-shadow: 0 6px 20px rgba(251, 146, 60, 0.35);
+  box-shadow: 0 6px 20px rgba(216, 153, 143, 0.35);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .auth-submit-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #f4a899, #eb937f);
   transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 30px rgba(251, 146, 60, 0.5);
+  box-shadow: 0 10px 30px rgba(216, 153, 143, 0.45);
 }
 
 .auth-submit-btn:disabled {
@@ -173,13 +173,13 @@
 
 /* Switch Mode Links */
 .auth-switch-link {
-  color: #fb923c;
+  color: #c98577;
   font-weight: 700;
   transition: all 0.2s ease;
 }
 
 .auth-switch-link:hover {
-  color: #f97316;
+  color: #b56f61;
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 2px;
@@ -188,8 +188,8 @@
 /* Image Side */
 .auth-image-side {
   position: relative;
-  background-color: #bfdbfe;
-  /* Fallback light blue matching the dog image */
+  background-color: #f3d8bc;
+  /* Fallback warm tone matching the landing palette */
 }
 
 .auth-image-overlay {
@@ -199,22 +199,22 @@
 
 /* Close Button */
 .auth-close-btn {
-  color: #9a3412;
-  background: linear-gradient(145deg, #fffbf5, #fef9f3);
-  border: 2px solid #fef3e8;
+  color: #7f5f52;
+  background: linear-gradient(145deg, #fff8ef, #f8ecdc);
+  border: 1px solid #e9d8c3;
   transition: all 0.3s ease;
 }
 
 .auth-close-btn:hover {
-  background: linear-gradient(145deg, #fed7aa, #fdba74);
-  border-color: #fb923c;
-  color: #7c2d12;
+  background: linear-gradient(145deg, #f5e4cf, #edd6ba);
+  border-color: #dfc8ab;
+  color: #5b4a45;
   transform: rotate(90deg);
 }
 
 /* Password Hint */
 .password-hint {
-  color: #9a3412;
+  color: #8a7770;
   font-weight: 600;
 }
 

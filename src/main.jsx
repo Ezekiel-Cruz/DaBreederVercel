@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import AuthProvider from "./context/AuthContext";
 import Layout from "./components/Layout";
+import AppRouteSkeleton from "./components/AppRouteSkeleton";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import NotificationBox from "./components/NotificationBox";
@@ -39,7 +40,7 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
-          <Suspense fallback={<div style={{ padding: 20 }}>Loading…</div>}>
+          <Suspense fallback={<AppRouteSkeleton />}>
             <Routes>
               {/* Admin Routes - Outside Layout */}
               <Route path="/admin" element={<AdminLoginPage />} />

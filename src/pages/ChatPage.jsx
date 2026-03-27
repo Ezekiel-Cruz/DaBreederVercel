@@ -7,7 +7,6 @@ import { useAuth } from "../hooks/useAuth";
 import ReportModal from "../components/ReportModal";
 import ConfirmDialog from "../components/ConfirmDialog";
 import { createMatchRequest } from "../lib/matches";
-import LoadingState from "../components/LoadingState";
 import "./ChatPage.css"; // warm dog-lover theme
 
 // Helper: truncate long preview messages for contact list
@@ -47,6 +46,35 @@ function ThreeDotsIcon() {
       <circle cx="12" cy="12" r="1.5" />
       <circle cx="12" cy="19" r="1.5" />
     </svg>
+  );
+}
+
+function ChatContactsSkeleton() {
+  return (
+    <div className="chat-contacts-skeleton" aria-label="Loading conversations" aria-busy="true">
+      {Array.from({ length: 6 }).map((_, idx) => (
+        <div key={idx} className="chat-contacts-skeleton-item">
+          <div className="chat-skeleton-avatar chat-skeleton-shimmer" />
+          <div className="chat-skeleton-lines">
+            <div className="chat-skeleton-line chat-skeleton-title chat-skeleton-shimmer" />
+            <div className="chat-skeleton-line chat-skeleton-subtitle chat-skeleton-shimmer" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ChatMessagesSkeleton() {
+  return (
+    <div className="chat-messages-skeleton" aria-label="Loading messages" aria-busy="true">
+      {Array.from({ length: 7 }).map((_, idx) => (
+        <div
+          key={idx}
+          className={`chat-skeleton-bubble ${idx % 2 === 0 ? "sent" : "received"} chat-skeleton-shimmer`}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -565,8 +593,8 @@ export default function ChatPage() {
         Messages
       </h2>
       {loadingContacts ? (
-        <div style={{ marginTop: "2rem" }}>
-          <LoadingState message="Loading your conversations..." minHeight={120} />
+        <div style={{ marginTop: "1.25rem" }}>
+          <ChatContactsSkeleton />
         </div>
       ) : contacts.length === 0 ? (
         <p
@@ -1033,18 +1061,7 @@ export default function ChatPage() {
               }
             `}
           </style>
-          {loadingMessages && (
-            <p
-              style={{
-                textAlign: "center",
-                color: "#9ca3af",
-                fontSize: "0.875rem",
-                margin: "2rem 0",
-              }}
-            >
-              Loading messages…
-            </p>
-          )}
+          {loadingMessages && <ChatMessagesSkeleton />}
           {messages.map((m) => {
             const isOwn = currentUserId && m.sender_id === currentUserId;
             const attachments = m.message_attachments || [];

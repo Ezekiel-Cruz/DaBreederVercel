@@ -1,15 +1,15 @@
 /* Global Styles inspired by provided screenshots */
 :root {
-  --bg-gradient: radial-gradient(circle at 30% 30%, #f4f7fd 0%, #e6ebf5 70%);
-  --primary: #3d37ff; /* purple button */
-  --primary-hover: #352fe3;
-  --accent: #006fe8; /* top bar */
+  --bg-gradient: radial-gradient(circle at 20% 20%, #fff4e8 0%, #f3dfc4 55%, #c7ddff 100%);
+  --primary: #bf6431;
+  --primary-hover: #a14e23;
+  --accent: #0e7490;
   --accent-text: #fff;
-  --success: #068a1f;
-  --border: #bdbdbd;
+  --success: #0f766e;
+  --border: #efc89f;
   --radius: 4px;
   --transition: 150ms ease;
-  font-family: "Inter", system-ui, Arial, sans-serif;
+  font-family: "Segoe UI", "Inter", "Noto Sans", system-ui, sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -22,7 +22,7 @@ body,
 }
 body {
   background: var(--bg-gradient);
-  color: #222;
+  color: #0f172a;
   font-size: 14px;
 }
 

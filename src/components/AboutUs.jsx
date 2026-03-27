@@ -2,13 +2,13 @@ import React from "react";
 
 export default function AboutUs() {
   return (
-    <section className="py-24 bg-white" id="about">
+    <section className="py-24 bg-[#fbf5eb]" id="about">
       <div className="mx-auto max-w-6xl px-6">
         {/* Hero Section */}
         <div className="text-center mb-20">
-          <h2 className="text-5xl font-light text-gray-900 mb-6">About DaBreeder</h2>
-          <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <h2 className="text-5xl font-extrabold text-[#5b4a45] mb-6">About DaBreeder</h2>
+          <div className="w-16 h-1 rounded-full bg-gradient-to-r from-[#f3b39f] to-[#dcb892] mx-auto mb-8"></div>
+          <p className="text-xl text-[#7c6a62] max-w-3xl mx-auto leading-relaxed">
             Promoting ethical dog breeding in the Philippines through transparency, technology, and
             community
           </p>
@@ -16,8 +16,8 @@ export default function AboutUs() {
 
         {/* Mission & Vision */}
         <div className="grid md:grid-cols-2 gap-16 mb-24">
-          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
+          <div className="bg-gradient-to-br from-[#fff9f1] to-[#fff4e6] border border-[#ecdcc8] rounded-3xl p-8 shadow-sm">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center mb-6">
               <svg
                 className="w-8 h-8 text-white"
                 fill="none"
@@ -32,20 +32,20 @@ export default function AboutUs() {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h3>
-            <p className="text-gray-700 leading-relaxed text-lg">
+            <h3 className="text-2xl font-bold text-[#5b4a45] mb-4">Our Mission</h3>
+            <p className="text-[#7c6a62] leading-relaxed text-lg">
               DaBreeder is a platform designed to promote ethical dog breeding in the Philippines by
               helping breeders and pet owners find genetically compatible, healthy, and responsibly
               raised dogs.
             </p>
-            <p className="text-gray-700 leading-relaxed text-lg mt-4">
+            <p className="text-[#7c6a62] leading-relaxed text-lg mt-4">
               We aim to create a safe, transparent, and collaborative environment where breeders and
               owners can connect with confidence.
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
+          <div className="bg-gradient-to-br from-[#fff9f1] to-[#fff4e6] border border-[#ecdcc8] rounded-3xl p-8 shadow-sm">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center mb-6">
               <svg
                 className="w-8 h-8 text-white"
                 fill="none"
@@ -65,8 +65,8 @@ export default function AboutUs() {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">Our Vision</h3>
-            <p className="text-gray-700 leading-relaxed text-lg">
+            <h3 className="text-2xl font-bold text-[#5b4a45] mb-4">Our Vision</h3>
+            <p className="text-[#7c6a62] leading-relaxed text-lg">
               To build the most trusted digital hub for dog breeders and enthusiasts — where healthy
               breeding practices, responsible ownership, and genetic matching are the foundation of
               every connection.
@@ -77,15 +77,15 @@ export default function AboutUs() {
         {/* Core Values */}
         <div className="mb-20">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-light text-gray-900 mb-6">Our Core Values</h3>
-            <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto"></div>
+            <h3 className="text-4xl font-extrabold text-[#5b4a45] mb-6">Our Core Values</h3>
+            <div className="w-16 h-1 rounded-full bg-gradient-to-r from-[#f3b39f] to-[#dcb892] mx-auto"></div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="text-center group bg-[#fff9f1] rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-[#ecdcc8]">
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                 <svg
-                  className="w-8 h-8 text-blue-600"
+                  className="w-8 h-8 text-[#7f5f52]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -103,16 +103,16 @@ export default function AboutUs() {
                   />
                 </svg>
               </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-3">Transparency</h4>
-              <p className="text-gray-600 leading-relaxed text-sm">
+              <h4 className="text-xl font-semibold text-[#5b4a45] mb-3">Transparency</h4>
+              <p className="text-[#7c6a62] leading-relaxed text-sm">
                 Verified records build trust between breeders and owners.
               </p>
             </div>
 
-            <div className="text-center group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="text-center group bg-[#fff9f1] rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-[#ecdcc8]">
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                 <svg
-                  className="w-8 h-8 text-green-600"
+                  className="w-8 h-8 text-[#7f5f52]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -125,16 +125,16 @@ export default function AboutUs() {
                   />
                 </svg>
               </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-3">Community</h4>
-              <p className="text-gray-600 leading-relaxed text-sm">
+              <h4 className="text-xl font-semibold text-[#5b4a45] mb-3">Community</h4>
+              <p className="text-[#7c6a62] leading-relaxed text-sm">
                 A strong breeder network creates a safer breeding ecosystem.
               </p>
             </div>
 
-            <div className="text-center group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="text-center group bg-[#fff9f1] rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-[#ecdcc8]">
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                 <svg
-                  className="w-8 h-8 text-purple-600"
+                  className="w-8 h-8 text-[#7f5f52]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -147,16 +147,16 @@ export default function AboutUs() {
                   />
                 </svg>
               </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-3">Innovation</h4>
-              <p className="text-gray-600 leading-relaxed text-sm">
+              <h4 className="text-xl font-semibold text-[#5b4a45] mb-3">Innovation</h4>
+              <p className="text-[#7c6a62] leading-relaxed text-sm">
                 We use technology to solve real-world animal welfare issues.
               </p>
             </div>
 
-            <div className="text-center group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="text-center group bg-[#fff9f1] rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-[#ecdcc8]">
+              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                 <svg
-                  className="w-8 h-8 text-orange-600"
+                  className="w-8 h-8 text-[#7f5f52]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -169,8 +169,8 @@ export default function AboutUs() {
                   />
                 </svg>
               </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-3">Quality First</h4>
-              <p className="text-gray-600 leading-relaxed text-sm">
+              <h4 className="text-xl font-semibold text-[#5b4a45] mb-3">Quality First</h4>
+              <p className="text-[#7c6a62] leading-relaxed text-sm">
                 Every breeder is verified through health certifications and responsible breeding
                 practices.
               </p>

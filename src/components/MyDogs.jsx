@@ -11,6 +11,33 @@ import { notifyDogsInvalidate } from "../lib/dogEvents";
 
 // Component now relies on central useDogs hook for data, caching, and invalidation.
 
+function MyDogsSkeleton() {
+  return (
+    <div className="matches-grid" aria-label="Loading dog cards" aria-busy="true">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div key={index} className="match-card skeleton-card">
+          <div className="card-image-wrapper skeleton-block" />
+          <div className="card-content">
+            <div className="skeleton-line skeleton-title" />
+            <div className="match-details">
+              <div className="detail-item skeleton-block skeleton-row" />
+              <div className="detail-item skeleton-block skeleton-row" />
+              <div className="detail-item skeleton-block skeleton-row" />
+            </div>
+            <div className="card-actions">
+              <div className="skeleton-btn skeleton-block" />
+              <div className="skeleton-btn skeleton-block" />
+            </div>
+            <div className="delete-button-container">
+              <div className="skeleton-btn skeleton-block" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function MyDogs({ dogs: overrideDogs = [], onAddDog, userId }) {
   const { dogs, loading, error, ready, refetch, setDogs, toggleDogVisibility } = useDogs({
     userId,
@@ -149,10 +176,7 @@ export default function MyDogs({ dogs: overrideDogs = [], onAddDog, userId }) {
       {/* Main Content */}
       <div className="content-section">
         {shouldShowLoadingState ? (
-          <LoadingState
-            message={loading ? "Loading your dogs..." : "Preparing your dogs..."}
-            minHeight={140}
-          />
+          <MyDogsSkeleton />
         ) : error ? (
           <div className="empty-state-modern">
             <div className="empty-state-icon">
@@ -321,10 +345,6 @@ export default function MyDogs({ dogs: overrideDogs = [], onAddDog, userId }) {
                       </div>
                     </div>
 
-                    <div className="match-details" style={{ marginTop: "0.5rem" }}>
-                      {/* Removed Requests, Completed, and Successful matings stats as requested */}
-                    </div>
-
                     <div className="card-actions">
                       <Link to={`/dog/${dog.id}`} className="view-profile-btn">
                         View Profile
@@ -345,7 +365,7 @@ export default function MyDogs({ dogs: overrideDogs = [], onAddDog, userId }) {
                           ? "Processing..."
                           : dog.is_visible !== false
                             ? "Hide"
-                            : "Show in Matches"}
+                            : "Show"}
                       </button>
                     </div>
 

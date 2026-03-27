@@ -85,18 +85,20 @@ export default function HowItWorks() {
   const [authMode, setAuthMode] = useState("signup");
 
   return (
-    <section id="how" className="py-24 bg-gray-50">
+    <section id="how" className="py-24 bg-[#f8f1e6]">
       <div className="mx-auto max-w-6xl px-6">
         {/* Header */}
         <div className="text-center mb-20">
-          <h2 className="text-5xl font-light text-gray-900 mb-6">Getting Started is Easy</h2>
-          <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-[#5b4a45] mb-6">
+            Getting Started is Easy
+          </h2>
+          <div className="w-20 h-1 rounded-full bg-gradient-to-r from-[#f4b3a4] to-[#ddb998] mx-auto mb-8"></div>
+          <p className="text-lg sm:text-xl text-[#7c6a62] max-w-3xl mx-auto leading-relaxed">
             From signup to first conversation in less than 15 minutes
           </p>
-          <div className="mt-6 inline-flex items-center px-4 py-2 bg-green-50 rounded-full border border-green-200">
+          <div className="mt-6 inline-flex items-center px-4 py-2 bg-[#fff8ef] rounded-full border border-[#ead8c2]">
             <svg
-              className="w-5 h-5 text-green-600 mr-2"
+              className="w-5 h-5 text-[#c98a76] mr-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -108,7 +110,7 @@ export default function HowItWorks() {
                 d="M5 13l4 4L19 7"
               />
             </svg>
-            <span className="text-green-700 font-medium">100% Free to Start</span>
+            <span className="text-[#7e685d] font-semibold">100% Free to Start</span>
           </div>
         </div>
 
@@ -118,27 +120,27 @@ export default function HowItWorks() {
             <div key={step.title} className="relative">
               {/* Connection line */}
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-gradient-to-r from-blue-200 to-purple-200 transform translate-x-6"></div>
+                <div className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-gradient-to-r from-[#f0cdb2] to-[#e7b6a3] transform translate-x-6"></div>
               )}
 
-              <div className="text-center group bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100">
+              <div className="text-center group bg-[#fff9f1] rounded-3xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 border border-[#ecdcc8] hover:-translate-y-1">
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[#f8ddc7] to-[#f4c4b6] rounded-3xl flex items-center justify-center text-[#7f5f52] group-hover:scale-110 transition-transform duration-300">
                     {step.icon}
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-[#f1aa97] to-[#d8a37f] rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
                     {index + 1}
                   </div>
                 </div>
 
                 <div className="mb-3">
-                  <span className="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-200">
+                  <span className="inline-block px-3 py-1 bg-[#f8eddf] text-[#7e685d] text-xs font-semibold rounded-full border border-[#ead8c2]">
                     {step.time}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{step.title}</h3>
-                <p className="text-gray-600 leading-relaxed text-sm">{step.text}</p>
+                <h3 className="text-xl font-bold text-[#5b4a45] mb-4">{step.title}</h3>
+                <p className="text-[#7c6a62] leading-relaxed text-sm">{step.text}</p>
               </div>
             </div>
           ))}
@@ -151,7 +153,7 @@ export default function HowItWorks() {
               setAuthMode("signup");
               setShowAuthModal(true);
             }}
-            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            className="inline-flex items-center px-8 py-4 bg-[linear-gradient(135deg,#f7b6aa,#f0a08f)] text-white font-bold rounded-full hover:bg-[linear-gradient(135deg,#f4a899,#eb937f)] transition-all duration-300 transform hover:scale-105 shadow-md"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

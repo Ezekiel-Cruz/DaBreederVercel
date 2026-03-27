@@ -4,16 +4,45 @@ import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import "./AddDogForm.css";
 
+function AddDogSkeleton() {
+  return (
+    <div className="find-match-container" aria-label="Loading add dog form" aria-busy="true">
+      <div className="header-section">
+        <div className="add-dog-skeleton-title add-dog-skeleton-shimmer" />
+        <div className="add-dog-skeleton-subtitle add-dog-skeleton-shimmer" />
+      </div>
+      <div className="content-section add-dog-skeleton-shell">
+        <div className="add-dog-skeleton-progress add-dog-skeleton-shimmer" />
+        <div className="add-dog-skeleton-block add-dog-skeleton-shimmer" />
+        <div className="add-dog-skeleton-block add-dog-skeleton-shimmer" />
+        <div className="add-dog-skeleton-actions">
+          <div className="add-dog-skeleton-btn add-dog-skeleton-shimmer" />
+          <div className="add-dog-skeleton-btn add-dog-skeleton-shimmer" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AddDogPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Add New Dog 🐾 | DaBreeder";
   }, []);
 
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/", { replace: true });
+    }
+  }, [loading, user, navigate]);
+
+  if (loading) {
+    return <AddDogSkeleton />;
+  }
+
   if (!user) {
-    navigate("/");
     return null;
   }
 

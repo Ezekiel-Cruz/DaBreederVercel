@@ -65,15 +65,15 @@ const items = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-24 bg-white">
+    <section id="features" className="py-24 bg-[#fbf5eb]">
       <div className="mx-auto max-w-6xl px-6">
         {/* Header */}
         <div className="text-center mb-20">
-          <h2 className="text-5xl font-light text-gray-900 mb-6">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-[#5b4a45] mb-6">
             Everything You Need to Breed Responsibly
           </h2>
-          <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <div className="w-20 h-1 rounded-full bg-gradient-to-r from-[#f4b3a4] to-[#ddb998] mx-auto mb-8"></div>
+          <p className="text-lg sm:text-xl text-[#7c6a62] max-w-3xl mx-auto leading-relaxed">
             Simple tools that make finding the right breeding partner easy, safe, and successful
           </p>
         </div>
@@ -83,20 +83,20 @@ export default function Features() {
           {items.map((feature) => (
             <div
               key={feature.title}
-              className="group text-center bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 h-full flex flex-col"
+              className="group text-center bg-[#fff9f1] rounded-3xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 border border-[#ecdcc8] h-full flex flex-col hover:-translate-y-1"
             >
-              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#f8ddc7] to-[#f4c4b6] rounded-3xl flex items-center justify-center text-[#7f5f52] group-hover:scale-110 transition-transform duration-300">
                 {feature.icon}
               </div>
 
               <div className="mb-4">
-                <span className="inline-block px-4 py-2 bg-green-50 text-green-700 text-sm font-medium rounded-full border border-green-200">
+                <span className="inline-block px-4 py-2 bg-[#f8eddf] text-[#7e685d] text-sm font-semibold rounded-full border border-[#ead8c2]">
                   {feature.benefit}
                 </span>
               </div>
 
-              <h3 className="text-2xl font-medium text-gray-900 mb-4">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed flex-grow">{feature.desc}</p>
+              <h3 className="text-2xl font-bold text-[#5b4a45] mb-4">{feature.title}</h3>
+              <p className="text-[#7c6a62] leading-relaxed flex-grow">{feature.desc}</p>
             </div>
           ))}
         </div>

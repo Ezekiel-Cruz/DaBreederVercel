@@ -1,9 +1,9 @@
-/* Toast Notification - Warm Dog Lover Theme 🐾 */
+/* Toast Notification - Warm Dog Lover Theme  */
 
 /* Toast Container */
 .shadow-xl {
   border-radius: 16px !important;
-  box-shadow: 0 12px 36px rgba(251, 146, 60, 0.25) !important;
+  box-shadow: 0 12px 36px rgba(181, 94, 46, 0.25) !important;
   border: 2px solid rgba(255, 255, 255, 0.5) !important;
   backdrop-filter: blur(8px);
 }

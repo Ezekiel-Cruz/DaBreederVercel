@@ -3,17 +3,38 @@ import "./DogCard.css"; // shared layout styles (container/header/content)
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useDogMatches from "../hooks/useDogMatches";
-import LoadingState from "./LoadingState";
 import ErrorMessage from "./ErrorMessage";
 import MatchOutcomeModal from "./MatchOutcomeModal";
 import SummaryCard from "./SummaryCard";
+
+function MyMatchesSkeleton() {
+  return (
+    <div className="my-matches-skeleton" aria-label="Loading matches" aria-busy="true">
+      <div className="summary-grid">
+        {Array.from({ length: 5 }).map((_, idx) => (
+          <div key={idx} className="summary-skeleton-card skeleton-shimmer" />
+        ))}
+      </div>
+      <div className="skeleton-filter-row">
+        {Array.from({ length: 4 }).map((_, idx) => (
+          <div key={idx} className="skeleton-chip skeleton-shimmer" />
+        ))}
+      </div>
+      <div className="skeleton-match-list">
+        {Array.from({ length: 3 }).map((_, idx) => (
+          <div key={idx} className="skeleton-match-card skeleton-shimmer" />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const STATUS_BADGES = {
   pending: { label: "Pending response", color: "bg-amber-100 text-amber-800" },
   accepted: { label: "Accepted", color: "bg-sky-100 text-sky-800" },
   declined: { label: "Declined", color: "bg-rose-100 text-rose-800" },
   cancelled: { label: "Cancelled", color: "bg-slate-200 text-slate-700" },
-  awaiting_confirmation: { label: "Awaiting confirmation", color: "bg-violet-100 text-violet-800" },
+  awaiting_confirmation: { label: "Pending", color: "bg-violet-100 text-violet-800" },
   completed_success: { label: "Successful", color: "bg-emerald-100 text-emerald-800" },
   completed_failed: { label: "Unsuccessful", color: "bg-rose-100 text-rose-700" },
 };
@@ -384,7 +405,7 @@ export default function MyMatches({ userId }) {
       await acceptMatch(match.id);
       window.dispatchEvent(
         new CustomEvent("toast", {
-          detail: { message: "Match awaiting confirmation", type: "success" },
+          detail: { message: "Match pending", type: "success" },
         })
       );
     } catch (err) {
@@ -425,7 +446,7 @@ export default function MyMatches({ userId }) {
           </div>
         </div>
         {loading && matches.length === 0 ? (
-          <LoadingState message="Loading your matches..." minHeight={160} />
+          <MyMatchesSkeleton />
         ) : error ? (
           <ErrorMessage message={error.message} onRetry={refetch} />
         ) : (
@@ -446,7 +467,7 @@ export default function MyMatches({ userId }) {
                 ))}
               </div>
             </div>
-            <div className="flex gap-2 mb-6 flex-wrap justify-center">
+            <div className="tab-row">
               {tabOptions.map((option) => (
                 <button
                   key={option.id}

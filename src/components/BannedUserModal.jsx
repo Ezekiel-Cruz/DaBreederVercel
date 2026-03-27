@@ -5,8 +5,8 @@ import React from "react";
  */
 export default function BannedUserModal({ user, onLogout }) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-md w-full p-8 shadow-2xl">
+    <div className="fixed inset-0 bg-[#4b3a33]/35 flex items-center justify-center z-50 p-4">
+      <div className="bg-[#fff9f1] border border-[#eadfce] rounded-2xl max-w-md w-full p-8 shadow-2xl">
         {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
@@ -29,8 +29,8 @@ export default function BannedUserModal({ user, onLogout }) {
 
         {/* Content */}
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Account Suspended</h2>
-          <p className="text-slate-600 mb-4">Your DaBreeder account has been suspended.</p>
+          <h2 className="text-2xl font-bold text-[#5b4a45] mb-2">Account Suspended</h2>
+          <p className="text-[#7c6a62] mb-4">Your DaBreeder account has been suspended.</p>
 
           {/* Ban Reason */}
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
@@ -41,12 +41,12 @@ export default function BannedUserModal({ user, onLogout }) {
           </div>
 
           {/* Message */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-blue-900">
+          <div className="bg-[#fff4e5] border border-[#ecd4b4] rounded-lg p-4 mb-6">
+            <p className="text-sm text-[#7f5f52]">
               If you believe this is a mistake, please contact our support team at{" "}
               <a
                 href="mailto:support@dabreeder.com"
-                className="font-semibold underline hover:text-blue-700"
+                className="font-semibold underline hover:text-[#6f4e44]"
               >
                 support@dabreeder.com
               </a>
@@ -56,7 +56,7 @@ export default function BannedUserModal({ user, onLogout }) {
           {/* Action Button */}
           <button
             onClick={onLogout}
-            className="w-full px-4 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition-colors"
+            className="w-full px-4 py-3 bg-[linear-gradient(135deg,#f7b6aa,#f0a08f)] hover:bg-[linear-gradient(135deg,#f4a899,#eb937f)] text-white font-semibold rounded-xl transition-colors"
           >
             Sign Out
           </button>

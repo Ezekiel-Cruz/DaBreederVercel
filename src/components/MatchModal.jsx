@@ -5,16 +5,16 @@ export default function MatchModal({ isOpen, onClose, selectedDog, matches, load
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-[#4b3a33]/35 flex items-center justify-center z-50 p-4">
+      <div className="bg-[#fff9f1] border border-[#eadfce] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-[#5b4a45]">
               Top Matches for {selectedDog?.name}
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-[#8a7770] hover:text-[#5b4a45] transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -29,26 +29,26 @@ export default function MatchModal({ isOpen, onClose, selectedDog, matches, load
 
           {loading ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Finding the best matches...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#efb2a1] mx-auto"></div>
+              <p className="mt-4 text-[#7c6a62]">Finding the best matches...</p>
             </div>
           ) : matches.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-600">No compatible matches found at this time.</p>
+              <p className="text-[#7c6a62]">No compatible matches found at this time.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {matches.map((match, index) => (
                 <div
                   key={match.id}
-                  className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                  className="bg-[#fffdf8] border border-[#ecdcc8] rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
                 >
                   {/* Match Ranking Badge */}
                   <div className="relative">
-                    <div className="absolute top-3 left-3 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold z-10">
+                    <div className="absolute top-3 left-3 bg-[#f0a08f] text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold z-10">
                       #{index + 1}
                     </div>
-                    <div className="absolute top-3 right-3 bg-green-600 text-white rounded-full px-3 py-1 text-sm font-bold z-10">
+                    <div className="absolute top-3 right-3 bg-[#d7a27e] text-white rounded-full px-3 py-1 text-sm font-bold z-10">
                       {match.score}% Match
                     </div>
                     <img
@@ -62,8 +62,8 @@ export default function MatchModal({ isOpen, onClose, selectedDog, matches, load
                   </div>
 
                   <div className="p-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{match.name}</h3>
-                    <div className="text-sm text-gray-600 space-y-1 mb-4">
+                    <h3 className="text-lg font-bold text-[#5b4a45] mb-2">{match.name}</h3>
+                    <div className="text-sm text-[#7c6a62] space-y-1 mb-4">
                       <p>{match.breed}</p>
                       <p>
                         {match.age_years} years old • {match.gender}
@@ -74,7 +74,7 @@ export default function MatchModal({ isOpen, onClose, selectedDog, matches, load
 
                     <Link
                       to={`/dog/${match.id}`}
-                      className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                      className="block w-full text-center px-4 py-2 bg-[linear-gradient(135deg,#f7b6aa,#f0a08f)] text-white rounded-lg hover:bg-[linear-gradient(135deg,#f4a899,#eb937f)] transition-colors"
                     >
                       View Profile
                     </Link>

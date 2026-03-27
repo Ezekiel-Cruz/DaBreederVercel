@@ -55,16 +55,16 @@ export default function ContactUs() {
   };
 
   return (
-    <section className="py-24 bg-gray-50" id="contact">
+    <section className="py-24 bg-[#fbf5eb]" id="contact">
       <div className="mx-auto max-w-6xl px-6">
         {/* Header */}
         <div className="text-center mb-20">
-          <h2 className="text-5xl font-light text-gray-900 mb-6">Contact Us</h2>
-          <div className="w-16 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-4">
+          <h2 className="text-5xl font-extrabold text-[#5b4a45] mb-6">Contact Us</h2>
+          <div className="w-16 h-1 rounded-full bg-gradient-to-r from-[#f3b39f] to-[#dcb892] mx-auto mb-8"></div>
+          <p className="text-xl text-[#7c6a62] max-w-3xl mx-auto leading-relaxed mb-4">
             We'd love to hear from you!
           </p>
-          <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg text-[#7c6a62] max-w-4xl mx-auto leading-relaxed">
             Whether you have questions, feedback, partnership opportunities, or need assistance
             using DaBreeder, our team is ready to help.
           </p>
@@ -74,15 +74,15 @@ export default function ContactUs() {
           {/* Contact Information */}
           <div className="space-y-12">
             <div className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-900 mb-8">Get in Touch</h3>
+              <h3 className="text-2xl font-bold text-[#5b4a45] mb-8">Get in Touch</h3>
             </div>
 
             <div className="space-y-8">
               <div className="group">
                 <div className="flex items-center gap-4 mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                     <svg
-                      className="w-6 h-6 text-white"
+                      className="w-6 h-6 text-[#7f5f52]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -96,18 +96,18 @@ export default function ContactUs() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-gray-900">Email</h4>
+                    <h4 className="text-lg font-semibold text-[#5b4a45]">Email</h4>
                   </div>
                 </div>
-                <p className="text-gray-700 font-medium">support@dabreeder.ph</p>
-                <p className="text-gray-500 text-sm">Response within 24 hours</p>
+                <p className="text-[#6e5c55] font-medium">support@dabreeder.ph</p>
+                <p className="text-[#8a7770] text-sm">Response within 24 hours</p>
               </div>
 
               <div className="group">
                 <div className="flex items-center gap-4 mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                     <svg
-                      className="w-6 h-6 text-white"
+                      className="w-6 h-6 text-[#7f5f52]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -121,18 +121,18 @@ export default function ContactUs() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-gray-900">Phone</h4>
+                    <h4 className="text-lg font-semibold text-[#5b4a45]">Phone</h4>
                   </div>
                 </div>
-                <p className="text-gray-700 font-medium">+63 912 345 6789</p>
-                <p className="text-gray-500 text-sm">Available for urgent inquiries</p>
+                <p className="text-[#6e5c55] font-medium">+63 912 345 6789</p>
+                <p className="text-[#8a7770] text-sm">Available for urgent inquiries</p>
               </div>
 
               <div className="group">
                 <div className="flex items-center gap-4 mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#f8ddc7] to-[#f2b7a7] rounded-2xl flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                     <svg
-                      className="w-6 h-6 text-white"
+                      className="w-6 h-6 text-[#7f5f52]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -151,63 +151,63 @@ export default function ContactUs() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-lg font-medium text-gray-900">Address</h4>
+                    <h4 className="text-lg font-semibold text-[#5b4a45]">Address</h4>
                   </div>
                 </div>
-                <p className="text-gray-700 font-medium">Manila, Philippines</p>
-                <p className="text-gray-500 text-sm">Serving breeders nationwide</p>
+                <p className="text-[#6e5c55] font-medium">Manila, Philippines</p>
+                <p className="text-[#8a7770] text-sm">Serving breeders nationwide</p>
               </div>
             </div>
 
             {/* Social Links */}
-            <div className="pt-8 border-t border-gray-200">
-              <h4 className="text-lg font-medium text-gray-900 mb-6">Connect With Us</h4>
+            <div className="pt-8 border-t border-[#e4d3be]">
+              <h4 className="text-lg font-semibold text-[#5b4a45] mb-6">Connect With Us</h4>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 bg-[#fff4e5] rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[#7f5f52]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Facebook</p>
-                    <p className="text-sm text-gray-600">DaBreeder PH</p>
+                    <p className="font-medium text-[#5b4a45]">Facebook</p>
+                    <p className="text-sm text-[#7c6a62]">DaBreeder PH</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 bg-[#fff4e5] rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[#7f5f52]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.347-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Instagram</p>
-                    <p className="text-sm text-gray-600">@DaBreeder</p>
+                    <p className="font-medium text-[#5b4a45]">Instagram</p>
+                    <p className="text-sm text-[#7c6a62]">@DaBreeder</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 bg-[#fff4e5] rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[#7f5f52]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Twitter/X</p>
-                    <p className="text-sm text-gray-600">@DaBreederPH</p>
+                    <p className="font-medium text-[#5b4a45]">Twitter/X</p>
+                    <p className="text-sm text-[#7c6a62]">@DaBreederPH</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-[#7f5f52] rounded-xl flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">TikTok</p>
-                    <p className="text-sm text-gray-600">@DaBreeder</p>
+                    <p className="font-medium text-[#5b4a45]">TikTok</p>
+                    <p className="text-sm text-[#7c6a62]">@DaBreeder</p>
                   </div>
                 </div>
               </div>
@@ -215,17 +215,17 @@ export default function ContactUs() {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-3xl p-8 shadow-sm">
+          <div className="bg-[#fff9f1] rounded-3xl p-8 shadow-sm border border-[#ecdcc8]">
             <div className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">Need Help?</h3>
-              <p className="text-gray-600">
+              <h3 className="text-2xl font-bold text-[#5b4a45] mb-2">Need Help?</h3>
+              <p className="text-[#7c6a62]">
                 For questions or concerns, you can also fill out our contact form below:
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-3">
+                <label htmlFor="name" className="block text-sm font-semibold text-[#685750] mb-3">
                   Full Name
                 </label>
                 <input
@@ -235,13 +235,13 @@ export default function ContactUs() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border-0 bg-gray-50 px-4 py-4 text-gray-900 placeholder-gray-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                  className="w-full rounded-2xl border border-[#e9d8c3] bg-[#fffaf2] px-4 py-4 text-[#5f4f49] placeholder-[#9a8479] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#efb2a1] transition-all duration-300"
                   placeholder="Your full name"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-3">
+                <label htmlFor="email" className="block text-sm font-semibold text-[#685750] mb-3">
                   Email Address
                 </label>
                 <input
@@ -251,13 +251,16 @@ export default function ContactUs() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border-0 bg-gray-50 px-4 py-4 text-gray-900 placeholder-gray-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                  className="w-full rounded-2xl border border-[#e9d8c3] bg-[#fffaf2] px-4 py-4 text-[#5f4f49] placeholder-[#9a8479] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#efb2a1] transition-all duration-300"
                   placeholder="your.email@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-3">
+                <label
+                  htmlFor="subject"
+                  className="block text-sm font-semibold text-[#685750] mb-3"
+                >
                   Subject / Concern
                 </label>
                 <select
@@ -266,7 +269,7 @@ export default function ContactUs() {
                   required
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border-0 bg-gray-50 px-4 py-4 text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                  className="w-full rounded-2xl border border-[#e9d8c3] bg-[#fffaf2] px-4 py-4 text-[#5f4f49] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#efb2a1] transition-all duration-300"
                 >
                   <option value="">Choose a topic</option>
                   <option value="general">General Inquiry</option>
@@ -280,7 +283,10 @@ export default function ContactUs() {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-3">
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-semibold text-[#685750] mb-3"
+                >
                   Message Box
                 </label>
                 <textarea
@@ -290,7 +296,7 @@ export default function ContactUs() {
                   required
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border-0 bg-gray-50 px-4 py-4 text-gray-900 placeholder-gray-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 resize-none"
+                  className="w-full rounded-2xl border border-[#e9d8c3] bg-[#fffaf2] px-4 py-4 text-[#5f4f49] placeholder-[#9a8479] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#efb2a1] transition-all duration-300 resize-none"
                   placeholder="Please describe your question, concern, or feedback in detail..."
                 />
               </div>
@@ -340,7 +346,7 @@ export default function ContactUs() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-8 rounded-2xl font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[linear-gradient(135deg,#f7b6aa,#f0a08f)] text-white py-4 px-8 rounded-2xl font-semibold hover:bg-[linear-gradient(135deg,#f4a899,#eb937f)] focus:outline-none focus:ring-2 focus:ring-[#efb2a1] focus:ring-offset-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center">

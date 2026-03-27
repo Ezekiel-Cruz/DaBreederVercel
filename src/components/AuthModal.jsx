@@ -186,7 +186,7 @@ export default function AuthModal({ open, mode = "signin", onClose, onSwitch, on
           <button
             aria-label="Close"
             onClick={onClose}
-            className="auth-close-btn absolute right-3 top-3 z-10 inline-flex items-center justify-center rounded-full p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+            className="auth-close-btn absolute right-3 top-3 z-10 inline-flex items-center justify-center rounded-full p-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#efb2a1]"
           >
             <svg
               viewBox="0 0 24 24"
@@ -363,7 +363,7 @@ export default function AuthModal({ open, mode = "signin", onClose, onSwitch, on
                         : "Login"}
                   </button>
 
-                  <p className="text-sm text-slate-700 text-center">
+                  <p className="text-sm text-[#7c6a62] text-center">
                     {isSignUp ? (
                       <>
                         Have an account?{" "}

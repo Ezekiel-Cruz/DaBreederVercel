@@ -7,6 +7,24 @@ import supabase from "../lib/supabaseClient";
 
 const ITEMS_PER_PAGE = 5;
 
+function NotificationSkeletonList() {
+  return (
+    <div className="notification-skeleton-list" aria-label="Loading notifications" aria-busy="true">
+      {Array.from({ length: 5 }).map((_, idx) => (
+        <article key={idx} className="notification-skeleton-item">
+          <div className="notification-skeleton-top">
+            <div className="notification-skeleton-pill notification-skeleton-shimmer" />
+            <div className="notification-skeleton-mini notification-skeleton-shimmer" />
+          </div>
+          <div className="notification-skeleton-line notification-skeleton-shimmer" />
+          <div className="notification-skeleton-line short notification-skeleton-shimmer" />
+          <div className="notification-skeleton-mini notification-skeleton-shimmer" />
+        </article>
+      ))}
+    </div>
+  );
+}
+
 export default function NotificationBox() {
   const { user } = useAuth();
   const [replies, setReplies] = useState([]);
@@ -153,10 +171,7 @@ export default function NotificationBox() {
           </CardHeader>
           <CardContent className="card-content-modern">
             {loading ? (
-              <div className="loading-state">
-                <div className="spinner"></div>
-                <span className="loading-text">Loading…</span>
-              </div>
+              <NotificationSkeletonList />
             ) : error ? (
               <div className="error-state">
                 <p>{error}</p>

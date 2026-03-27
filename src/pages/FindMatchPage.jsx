@@ -16,6 +16,47 @@ import "./FindMatchPage.css"; // warm dog-lover theme
 
 // Shared invalidation timestamp is managed inside useDogs; keep usage here only for matches caching.
 
+function MatchCardsSkeleton() {
+  return (
+    <div className="matches-grid" aria-label="Loading matches" aria-busy="true">
+      {Array.from({ length: 4 }).map((_, idx) => (
+        <div key={idx} className="match-card match-skeleton-card">
+          <div className="card-image-wrapper match-skeleton-block" />
+          <div className="card-content">
+            <div className="match-skeleton-line match-skeleton-title match-skeleton-block" />
+            <div className="match-details">
+              <div className="detail-item match-skeleton-row match-skeleton-block" />
+              <div className="detail-item match-skeleton-row match-skeleton-block" />
+              <div className="detail-item match-skeleton-row match-skeleton-block" />
+            </div>
+            <div className="card-actions">
+              <div className="match-skeleton-btn match-skeleton-block" />
+              <div className="match-skeleton-btn match-skeleton-block" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SelectDogSkeleton() {
+  return (
+    <div className="dogs-grid" aria-label="Loading your dogs" aria-busy="true">
+      {Array.from({ length: 6 }).map((_, idx) => (
+        <div key={idx} className="dog-card dog-skeleton-card">
+          <div className="dog-image dog-skeleton-block" />
+          <div className="dog-info">
+            <div className="dog-skeleton-line dog-skeleton-title dog-skeleton-block" />
+            <div className="dog-skeleton-line dog-skeleton-subtitle dog-skeleton-block" />
+            <div className="dog-skeleton-pill dog-skeleton-block" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function FindMatchPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,6 +76,7 @@ export default function FindMatchPage() {
 
   // Debug logger for this page
   const FM_LOG = (...args) => console.log("🔎 [FindMatch]", ...args);
+  const MATCHES_PAGE_SIZE = 4;
   const MATCHES_TTL = 15 * 60 * 1000; // 15 minutes
   const matchesCache = useRef(
     createCache("match-cache", {
@@ -71,7 +113,7 @@ export default function FindMatchPage() {
   const selectedDogIdRef = useRef(null);
   const [potentialMatches, setPotentialMatches] = useState([]);
   const [allMatches, setAllMatches] = useState([]); // Store all matches
-  const [displayCount, setDisplayCount] = useState(3); // How many to show
+  const [displayCount, setDisplayCount] = useState(MATCHES_PAGE_SIZE); // How many to show
   const [breedFilter, setBreedFilter] = useState("mixed"); // "same" or "mixed"
   // Split loading states so selecting a dog doesn't reload the dog grid/card
   const [matchesLoading, setMatchesLoading] = useState(false);
@@ -119,8 +161,8 @@ export default function FindMatchPage() {
         if (Array.isArray(stateMatches) && stateMatches.length > 0) {
           FM_LOG("restore: potentialMatches from state", stateMatches.length);
           setAllMatches(stateMatches);
-          setPotentialMatches(stateMatches.slice(0, 3));
-          setDisplayCount(3);
+          setPotentialMatches(stateMatches.slice(0, MATCHES_PAGE_SIZE));
+          setDisplayCount(MATCHES_PAGE_SIZE);
           setMatchesLoading(false);
         } else {
           try {
@@ -128,8 +170,8 @@ export default function FindMatchPage() {
             if (Array.isArray(cached) && cached.length > 0) {
               FM_LOG("restore: potentialMatches from cache", cached.length);
               setAllMatches(cached);
-              setPotentialMatches(cached.slice(0, 3));
-              setDisplayCount(3);
+              setPotentialMatches(cached.slice(0, MATCHES_PAGE_SIZE));
+              setDisplayCount(MATCHES_PAGE_SIZE);
               setMatchesLoading(false);
             }
           } catch (err) {
@@ -265,8 +307,10 @@ export default function FindMatchPage() {
       const filteredCached = await filterUnavailableMatches(rescored);
       FM_LOG("matches: using rescored cached", filteredCached.length, "(raw:", cached.length, ")");
       setAllMatches(filteredCached);
-      setPotentialMatches(getFilteredMatches(filteredCached, dog, breedFilter).slice(0, 3));
-      setDisplayCount(3); // Reset display count
+      setPotentialMatches(
+        getFilteredMatches(filteredCached, dog, breedFilter).slice(0, MATCHES_PAGE_SIZE)
+      );
+      setDisplayCount(MATCHES_PAGE_SIZE); // Reset display count
       setMatchesLoading(false);
       return;
     }
@@ -307,13 +351,15 @@ export default function FindMatchPage() {
     FM_LOG("matches: scored", {
       total: rows.length,
       shown: scoredMatches.length,
-      top: scoredMatches.map((m) => ({ id: m.id, score: m.score })).slice(0, 3),
+      top: scoredMatches.map((m) => ({ id: m.id, score: m.score })).slice(0, MATCHES_PAGE_SIZE),
     });
     const availableMatches = await filterUnavailableMatches(scoredMatches);
     if (matchesRequestIdRef.current === myReq) {
       setAllMatches(availableMatches);
-      setPotentialMatches(getFilteredMatches(availableMatches, dog, breedFilter).slice(0, 3));
-      setDisplayCount(3); // Reset display count
+      setPotentialMatches(
+        getFilteredMatches(availableMatches, dog, breedFilter).slice(0, MATCHES_PAGE_SIZE)
+      );
+      setDisplayCount(MATCHES_PAGE_SIZE); // Reset display count
       try {
         matchesCache.current.set(`matches:${dog.id}`, scoredMatches);
       } catch (err) {
@@ -422,7 +468,7 @@ export default function FindMatchPage() {
   };
 
   const handleViewMore = () => {
-    const newCount = displayCount + 3;
+    const newCount = displayCount + MATCHES_PAGE_SIZE;
     setDisplayCount(newCount);
     setPotentialMatches(
       getFilteredMatches(allMatches, selectedDog, breedFilter).slice(0, newCount)
@@ -431,7 +477,7 @@ export default function FindMatchPage() {
 
   return (
     <>
-      <div className="find-match-container">
+      <div className="find-match-page-container">
         {/* Header Section */}
         <div className="header-section">
           <h1 className="page-title">Find Matches</h1>
@@ -453,7 +499,7 @@ export default function FindMatchPage() {
             </button>
           </div>
           {dogsLoading && userDogs.length === 0 ? (
-            <LoadingState message="Loading your dogs..." minHeight={140} />
+            <SelectDogSkeleton />
           ) : userDogs.length === 0 ? (
             <div className="empty-state">
               <p>Add a dog to your profile first to find matches</p>
@@ -469,32 +515,33 @@ export default function FindMatchPage() {
                   className={`dog-card ${selectedDog?.id === dog.id ? "selected" : ""}`}
                   onClick={() => handleSelectDog(dog)}
                 >
-                  <img
-                    src={dog.image_url || "/shibaPor.jpg"}
-                    alt={dog.name}
-                    className="dog-image"
-                    loading="lazy"
-                  />
+                  <div className="dog-image-wrapper">
+                    <img
+                      src={dog.image_url || "/shibaPor.jpg"}
+                      alt={dog.name}
+                      className="dog-image"
+                      loading="lazy"
+                    />
+                  </div>
                   <div className="dog-info">
-                    <h3>{dog.name}</h3>
-                    <p>{dog.breed}</p>
-                    <div
-                      className={
-                        "gender-pill " +
-                        (((dog.gender || dog.sex || "") + "").toString().toLowerCase() === "male"
-                          ? "male"
-                          : ((dog.gender || dog.sex || "") + "").toString().toLowerCase() ===
-                              "female"
-                            ? "female"
-                            : "unknown")
-                      }
-                      style={{ marginTop: 6 }}
-                    >
-                      {(() => {
-                        const g = (dog.gender || dog.sex || "").toString();
-                        const label = g ? g[0].toUpperCase() + g.slice(1).toLowerCase() : "\u2014";
-                        return <span className="gender-label">{label.toLowerCase()}</span>;
-                      })()}
+                    <h3 className="select-dog-name">{dog.name}</h3>
+                    <div className="select-dog-meta">
+                      <div className="select-dog-meta-item">
+                        <span className="select-dog-meta-label">Breed</span>
+                        <span className="select-dog-meta-value">{dog.breed || "—"}</span>
+                      </div>
+                      <div className="select-dog-meta-item">
+                        <span className="select-dog-meta-label">Gender</span>
+                        <span className="select-dog-meta-value">
+                          {(() => {
+                            const g = (dog.gender || dog.sex || "").toString();
+                            const label = g
+                              ? g[0].toUpperCase() + g.slice(1).toLowerCase()
+                              : "Unknown";
+                            return label;
+                          })()}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -509,9 +556,7 @@ export default function FindMatchPage() {
             <div className="matches-header">
               <h2 className="section-title">Matches for {selectedDog.name}</h2>
               <div className="filter-group">
-                <label style={{ fontWeight: "bold", marginRight: "1rem", color: "#4B5563" }}>
-                  Filter:
-                </label>
+                <label className="filter-title">Filter:</label>
                 <label className={"filter-label" + (breedFilter === "same" ? " active" : "")}>
                   <input
                     type="radio"
@@ -519,16 +564,9 @@ export default function FindMatchPage() {
                     value="same"
                     checked={breedFilter === "same"}
                     onChange={handleBreedFilterChange}
-                    style={{ accentColor: "#6366F1", marginRight: "0.5rem" }}
+                    className="filter-radio"
                   />
-                  <span
-                    style={{
-                      color: breedFilter === "same" ? "#6366F1" : "#4B5563",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Same Breed
-                  </span>
+                  <span className="filter-option-text">Same Breed</span>
                 </label>
                 <label className={"filter-label" + (breedFilter === "mixed" ? " active" : "")}>
                   <input
@@ -537,21 +575,14 @@ export default function FindMatchPage() {
                     value="mixed"
                     checked={breedFilter === "mixed"}
                     onChange={handleBreedFilterChange}
-                    style={{ accentColor: "#6366F1", marginRight: "0.5rem" }}
+                    className="filter-radio"
                   />
-                  <span
-                    style={{
-                      color: breedFilter === "mixed" ? "#6366F1" : "#4B5563",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Mixed Breed
-                  </span>
+                  <span className="filter-option-text">Mixed Breed</span>
                 </label>
               </div>
             </div>
 
-            {matchesLoading && <LoadingState message="Finding matches..." minHeight={120} />}
+            {matchesLoading && !error && <MatchCardsSkeleton />}
 
             {error && (
               <div className="error-state">
@@ -591,7 +622,7 @@ export default function FindMatchPage() {
                           </div>
                           <div className="detail-item">
                             <span className="detail-label">Age</span>
-                            <span className="detail-value">{match.age_years} years old</span>
+                            <span className="detail-value">{match.age_years} years</span>
                           </div>
                           <div className="detail-item">
                             <span className="detail-label">Gender</span>
@@ -616,7 +647,7 @@ export default function FindMatchPage() {
                             onClick={() => handleContact(match)}
                             disabled={contactingDogId === match.id}
                           >
-                            {contactingDogId === match.id ? "Opening chat..." : "Contact Owner"}
+                            {contactingDogId === match.id ? "Opening chat..." : "Contact"}
                           </button>
                         </div>
                       </div>
@@ -626,16 +657,8 @@ export default function FindMatchPage() {
 
                 {/* View More button */}
                 {displayCount < getFilteredMatches(allMatches, selectedDog, breedFilter).length && (
-                  <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
-                    <button
-                      className="primary-btn"
-                      onClick={handleViewMore}
-                      style={{
-                        padding: "0.75rem 2rem",
-                        fontSize: "1rem",
-                        fontWeight: "500",
-                      }}
-                    >
+                  <div className="view-more-wrap">
+                    <button className="primary-btn view-more-btn" onClick={handleViewMore}>
                       View More
                     </button>
                   </div>

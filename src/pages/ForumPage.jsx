@@ -9,7 +9,6 @@ import { fetchThreads, toggleThreadVote } from "../lib/forum";
 import "./FindMatchPage.css";
 import "./ForumPage.css"; // warm dog-lover theme
 import { getCookie, setCookie } from "../utils/cookies";
-import LoadingState from "../components/LoadingState";
 import ErrorMessage from "../components/ErrorMessage";
 
 // Module-level cache to survive unmounts and brief auth revalidations between tab switches
@@ -19,6 +18,28 @@ const GLOBAL_FORUM_CACHE = (globalThis.__DB_GLOBAL_FORUM_CACHE__ =
     lastLoadedAt: 0,
     sort: "new",
   });
+
+function ForumThreadsSkeleton() {
+  return (
+    <div className="forum-skeleton-list" aria-label="Loading forum threads" aria-busy="true">
+      {Array.from({ length: 4 }).map((_, idx) => (
+        <article key={idx} className="forum-skeleton-card">
+          <div className="forum-skeleton-row">
+            <div className="forum-skeleton-pill forum-skeleton-shimmer" />
+            <div className="forum-skeleton-mini forum-skeleton-shimmer" />
+          </div>
+          <div className="forum-skeleton-title forum-skeleton-shimmer" />
+          <div className="forum-skeleton-line forum-skeleton-shimmer" />
+          <div className="forum-skeleton-line short forum-skeleton-shimmer" />
+          <div className="forum-skeleton-footer">
+            <div className="forum-skeleton-mini forum-skeleton-shimmer" />
+            <div className="forum-skeleton-mini forum-skeleton-shimmer" />
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
 
 export default function ForumPage() {
   const { user, loading } = React.useContext(AuthContext);
@@ -740,7 +761,7 @@ export default function ForumPage() {
       {/* Inline post removed — modal is primary. */}
 
       {listLoading && threads.length === 0 ? (
-        <LoadingState message="Loading forum..." minHeight={140} />
+        <ForumThreadsSkeleton />
       ) : (
         <ul className="grid gap-3">
           {threads.map((t) => {

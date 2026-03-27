@@ -1,4 +1,5 @@
 import supabase from "./supabaseClient";
+import { createNotification } from "./notifications";
 
 const DOG_FIELDS = [
   "id",
@@ -123,6 +124,27 @@ export async function createMatchRequest({
     .select(MATCH_SELECT)
     .single();
   if (error) throw error;
+
+  // Notify the receiving breeder about the new request (non-fatal if notification fails)
+  try {
+    const requesterName = data?.requester_dog?.name || "A breeder";
+    const requestedName = data?.requested_dog?.name || "your dog";
+    await createNotification({
+      userId: targetUserId,
+      title: "New breeding request",
+      message: `${requesterName} requested a match with ${requestedName}.`,
+      type: "match_request",
+      metadata: {
+        matchId: data?.id,
+        contactId,
+        requesterDogId,
+        requestedDogId,
+      },
+    });
+  } catch (notifyErr) {
+    console.warn("createMatchRequest notification skipped:", notifyErr?.message || notifyErr);
+  }
+
   return data;
 }
 
@@ -222,6 +244,24 @@ export async function acceptMatchRequest(matchId) {
     .select()
     .single();
   if (error) throw error;
+
+  // Notify requester that the match moved to pending outcome confirmation
+  try {
+    if (data?.requester_user_id) {
+      await createNotification({
+        userId: data.requester_user_id,
+        title: "Match accepted",
+        message: "Your breeding request was accepted and is now pending outcome confirmation.",
+        type: "match_accepted",
+        metadata: {
+          matchId: data?.id,
+        },
+      });
+    }
+  } catch (notifyErr) {
+    console.warn("acceptMatchRequest notification skipped:", notifyErr?.message || notifyErr);
+  }
+
   return data;
 }
 
@@ -279,7 +319,7 @@ export async function submitMatchOutcome({
   // 2) Ensure the verifying dog is part of the match
   const { data: match, error: matchErr } = await supabase
     .from("dog_match_requests")
-    .select("id, requester_dog_id, requested_dog_id, status")
+    .select("id, requester_dog_id, requested_dog_id, requester_user_id, requested_user_id, status")
     .eq("id", matchId)
     .single();
   if (matchErr) throw matchErr;
@@ -334,5 +374,31 @@ export async function submitMatchOutcome({
     .select()
     .single();
   if (insertError) throw insertError;
+
+  // Notify the partner breeder that an outcome was submitted
+  try {
+    const partnerUserId =
+      String(match.requester_user_id) === String(user.id)
+        ? match.requested_user_id
+        : match.requester_user_id;
+
+    if (partnerUserId) {
+      const outcomeLabel = outcome === "no_show" ? "no show" : outcome;
+      await createNotification({
+        userId: partnerUserId,
+        title: "Match outcome submitted",
+        message: `Your match outcome was marked as ${outcomeLabel}.`,
+        type: "match_outcome",
+        metadata: {
+          matchId,
+          outcome,
+          verifiedDogId,
+        },
+      });
+    }
+  } catch (notifyErr) {
+    console.warn("submitMatchOutcome notification skipped:", notifyErr?.message || notifyErr);
+  }
+
   return data;
 }

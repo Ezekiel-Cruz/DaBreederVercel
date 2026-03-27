@@ -67,14 +67,14 @@ export default function Modal({
   return (
     <div ref={containerRef} className={`fixed inset-0 z-50`} aria-hidden={!open} inert={!open}>
       <div
-        className={`absolute inset-0 bg-black/40 backdrop-blur-md transition-all duration-300 ease-in-out ${
+        className={`absolute inset-0 bg-[#4b3a33]/35 backdrop-blur-md transition-all duration-300 ease-in-out ${
           isAnimating ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
       />
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <div
-          className={`w-full ${widthClass} bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden transform transition-all duration-300 ease-in-out ${
+          className={`w-full ${widthClass} bg-[#fff9f1] rounded-2xl shadow-xl border border-[#eadfce] overflow-hidden transform transition-all duration-300 ease-in-out ${
             isAnimating ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 translate-y-4"
           }`}
           role="dialog"

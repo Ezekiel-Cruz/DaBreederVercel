@@ -32,7 +32,7 @@ export default function DogForm({ onSubmitted }) {
 
   // Apply modern background style when this component is mounted
   useEffect(() => {
-    document.body.style.backgroundColor = "#f8fafc";
+    document.body.style.backgroundColor = "#fbf5eb";
     return () => {
       document.body.style.backgroundColor = "";
     };

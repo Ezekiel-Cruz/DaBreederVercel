@@ -4,7 +4,6 @@ import { Link, useParams } from "react-router-dom";
 import supabase from "../lib/supabaseClient";
 import { safeGetUser } from "../lib/auth";
 import ConfirmDialog from "../components/ConfirmDialog";
-import LoadingState from "../components/LoadingState";
 import ErrorMessage from "../components/ErrorMessage";
 import ReportModal from "../components/ReportModal";
 import {
@@ -17,11 +16,42 @@ import {
 import "./ThreadPage.css"; // warm dog-lover theme
 import { getCookie, setCookie } from "../utils/cookies";
 
+function ThreadPageSkeleton() {
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-6" aria-label="Loading thread" aria-busy="true">
+      <div className="thread-skeleton-card">
+        <div className="thread-skeleton-row">
+          <div className="thread-skeleton-pill thread-skeleton-shimmer" />
+          <div className="thread-skeleton-mini thread-skeleton-shimmer" />
+        </div>
+        <div className="thread-skeleton-title thread-skeleton-shimmer" />
+        <div className="thread-skeleton-line thread-skeleton-shimmer" />
+        <div className="thread-skeleton-line short thread-skeleton-shimmer" />
+      </div>
+
+      <div className="thread-skeleton-comments">
+        {Array.from({ length: 4 }).map((_, idx) => (
+          <article key={idx} className="thread-skeleton-comment">
+            <div className="thread-skeleton-row">
+              <div className="thread-skeleton-mini thread-skeleton-shimmer" />
+              <div className="thread-skeleton-mini thread-skeleton-shimmer" />
+            </div>
+            <div className="thread-skeleton-line thread-skeleton-shimmer" />
+            <div className="thread-skeleton-line short thread-skeleton-shimmer" />
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ThreadPage() {
   const { id } = useParams();
   const threadId = id;
   const [thread, setThread] = useState(null);
   const [comments, setComments] = useState([]);
+  const [loadingThread, setLoadingThread] = useState(true);
+  const [refreshingThread, setRefreshingThread] = useState(false);
   // reply functionality removed by request
   const [error, setError] = useState("");
   const [posting, setPosting] = useState(false);
@@ -46,8 +76,10 @@ export default function ThreadPage() {
   const composerId = "new-comment";
   const [focusedTick, setFocusedTick] = useState(0);
 
-  async function load() {
+  async function load({ silent = false } = {}) {
     try {
+      if (silent) setRefreshingThread(true);
+      else setLoadingThread(true);
       setError("");
       const { thread, comments } = await fetchThreadWithComments(threadId);
       setThread(thread);
@@ -96,6 +128,9 @@ export default function ThreadPage() {
     } catch (err) {
       console.error(err);
       setError(err.message || "Failed to load thread");
+    } finally {
+      if (silent) setRefreshingThread(false);
+      else setLoadingThread(false);
     }
   }
 
@@ -246,7 +281,7 @@ export default function ThreadPage() {
   useEffect(() => {
     // Only reload if we have nothing yet or content is older than 10s
     if (!thread || !thread.id) {
-      load();
+      load({ silent: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusedTick]);
@@ -561,13 +596,15 @@ export default function ThreadPage() {
 
   if (!thread) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-6">
-        {error ? (
-          <ErrorMessage message={error} />
+      <>
+        {error && !loadingThread ? (
+          <div className="max-w-3xl mx-auto px-4 py-6">
+            <ErrorMessage message={error} />
+          </div>
         ) : (
-          <LoadingState message="Loading thread..." minHeight={140} />
+          <ThreadPageSkeleton />
         )}
-      </div>
+      </>
     );
   }
 
@@ -762,6 +799,12 @@ export default function ThreadPage() {
           </select>
         </label>
       </div>
+      {refreshingThread && (
+        <div
+          className="thread-refresh-skeleton thread-skeleton-shimmer"
+          aria-label="Refreshing thread"
+        />
+      )}
       {/* Composer toggled by header comment chip */}
       {showComposer && (
         <form id={composerId} onSubmit={postComment} className="p-3">
@@ -801,7 +844,12 @@ export default function ThreadPage() {
       <ul className="grid gap-3 mb-6">
         {sortedTree.map((c) => (
           <li key={c.id} className="">
-            <div id={`c-${c.id}`} className="p-3 border border-slate-100 rounded-lg bg-white">
+            <div
+              id={`c-${c.id}`}
+              className={`p-3 border border-slate-100 rounded-lg bg-white ${
+                deletingComment[c.id] ? "thread-comment-pending" : ""
+              }`}
+            >
               <div className="flex items-center gap-3 text-xs text-slate-500">
                 {c.author?.name ? (
                   <span className="font-medium text-slate-700">{c.author.name}</span>
@@ -896,7 +944,9 @@ export default function ThreadPage() {
                   <div
                     key={ch.id}
                     id={`c-${ch.id}`}
-                    className="p-3 border border-slate-100 rounded-lg bg-white/50"
+                    className={`p-3 border border-slate-100 rounded-lg bg-white/50 ${
+                      deletingComment[ch.id] ? "thread-comment-pending" : ""
+                    }`}
                   >
                     <div className="flex items-center gap-3 text-xs text-slate-500">
                       {ch.author?.name ? (
@@ -992,6 +1042,16 @@ export default function ThreadPage() {
             </div>
             <p className="text-slate-600 font-medium">No comments yet</p>
             <p className="text-sm text-slate-500 mt-1">Be the first to share your thoughts!</p>
+          </li>
+        )}
+        {posting && (
+          <li className="thread-skeleton-comment" aria-label="Posting comment" aria-busy="true">
+            <div className="thread-skeleton-row">
+              <div className="thread-skeleton-mini thread-skeleton-shimmer" />
+              <div className="thread-skeleton-mini thread-skeleton-shimmer" />
+            </div>
+            <div className="thread-skeleton-line thread-skeleton-shimmer" />
+            <div className="thread-skeleton-line short thread-skeleton-shimmer" />
           </li>
         )}
       </ul>

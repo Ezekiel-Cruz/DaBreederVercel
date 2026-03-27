@@ -1,4 +1,4 @@
-/* Report Modal - Warm Dog Lover Theme 🐾 */
+/* Report Modal - Warm Dog Lover Theme  */
 
 /* Modal Overlay */
 .fixed.inset-0.bg-black\/50 {
@@ -8,16 +8,16 @@
 
 /* Modal Card */
 .bg-white.rounded-xl.max-w-md {
-  background: linear-gradient(145deg, #ffffff, #fff9f5) !important;
-  border: 3px solid #fef3e8 !important;
+  background: linear-gradient(145deg, #ffffff, #fff4e8) !important;
+  border: 3px solid #f3dfc4 !important;
   border-radius: 24px !important;
-  box-shadow: 0 20px 60px rgba(251, 146, 60, 0.25) !important;
+  box-shadow: 0 20px 60px rgba(181, 94, 46, 0.25) !important;
   position: relative;
   overflow: hidden;
 }
 
 .bg-white.rounded-xl.max-w-md::before {
-  content: "🐾";
+  content: "";
   position: absolute;
   top: -20px;
   right: -20px;
@@ -31,18 +31,18 @@
 h2.text-2xl {
   font-size: 1.5rem;
   font-weight: 900;
-  color: #7c2d12 !important;
+  color: #6f3f22 !important;
 }
 
 /* Close Button */
 button.text-slate-400:hover {
-  color: #fb923c !important;
+  color: #d67c45 !important;
   transform: scale(1.1);
 }
 
 /* Form Labels */
 label.block.text-sm {
-  color: #7c2d12 !important;
+  color: #6f3f22 !important;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -53,9 +53,9 @@ label.block.text-sm {
 select,
 input[type="text"],
 textarea {
-  border: 2px solid #fef3e8 !important;
-  background: linear-gradient(to right, #fffbf5, #fef9f3) !important;
-  color: #7c2d12 !important;
+  border: 2px solid #f3dfc4 !important;
+  background: linear-gradient(to right, #fff7ed, #ffedd7) !important;
+  color: #6f3f22 !important;
   font-weight: 600;
   border-radius: 12px !important;
   transition: all 0.3s ease;
@@ -65,8 +65,8 @@ select:focus,
 input[type="text"]:focus,
 textarea:focus {
   outline: none !important;
-  border-color: #fb923c !important;
-  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.15) !important;
+  border-color: #d67c45 !important;
+  box-shadow: 0 0 0 3px rgba(181, 94, 46, 0.15) !important;
   background: white !important;
 }
 
@@ -91,17 +91,17 @@ button.bg-red-600:hover:not(:disabled) {
 
 /* Cancel Button */
 button.bg-slate-100 {
-  background: linear-gradient(to bottom, #fef9f3, #fef3e8) !important;
-  border: 2px solid #fef3e8 !important;
-  color: #7c2d12 !important;
+  background: linear-gradient(to bottom, #ffedd7, #f3dfc4) !important;
+  border: 2px solid #f3dfc4 !important;
+  color: #6f3f22 !important;
   font-weight: 700 !important;
   border-radius: 12px !important;
   transition: all 0.3s ease;
 }
 
 button.bg-slate-100:hover {
-  background: linear-gradient(to bottom, #fed7aa, #fdba74) !important;
-  border-color: #fdba74 !important;
+  background: linear-gradient(to bottom, #efc89f, #e4b07e) !important;
+  border-color: #e4b07e !important;
   transform: translateY(-2px);
 }
 
@@ -117,11 +117,11 @@ button.bg-slate-100:hover {
 
 /* Notes Box */
 .bg-blue-50 {
-  background: linear-gradient(to right, #eff6ff, #dbeafe) !important;
-  border: 2px solid #bfdbfe !important;
+  background: linear-gradient(to right, #eff6ff, #f3dfc4) !important;
+  border: 2px solid #efc89f !important;
   border-radius: 12px !important;
 }
 
 .text-blue-700 {
-  color: #1e40af !important;
+  color: #8a5a3b !important;
 }

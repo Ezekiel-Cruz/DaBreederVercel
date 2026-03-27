@@ -1,4 +1,4 @@
-/* Summary Card - Warm Dog Lover Theme 🐾 */
+/* Summary Card - Warm Dog Lover Theme  */
 
 .summary-card {
   border-radius: 24px;
@@ -10,7 +10,7 @@
   gap: 0.45rem;
   text-align: center;
   min-height: 150px;
-  box-shadow: 0 6px 16px rgba(251, 146, 60, 0.08);
+  box-shadow: 0 6px 16px rgba(181, 94, 46, 0.08);
   border: 3px solid;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
@@ -18,7 +18,7 @@
 }
 
 .summary-card::before {
-  content: "🐾";
+  content: "";
   position: absolute;
   top: -20px;
   right: -20px;
@@ -30,7 +30,7 @@
 
 .summary-card:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 32px rgba(251, 146, 60, 0.15);
+  box-shadow: 0 12px 32px rgba(181, 94, 46, 0.15);
 }
 
 .summary-card-icon-wrapper {
@@ -119,13 +119,13 @@
 
 /* Accepted Card */
 .summary-card-accepted {
-  background: linear-gradient(145deg, #dbeafe, #bfdbfe);
-  border-color: #3b82f6;
-  color: #1e40af;
+  background: linear-gradient(145deg, #f3dfc4, #efc89f);
+  border-color: #d67c45;
+  color: #8a5a3b;
 }
 
 .summary-card-accepted .summary-card-icon {
-  color: #2563eb;
+  color: #bf6431;
 }
 
 /* Responsive Design */

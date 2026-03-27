@@ -1,4 +1,4 @@
-/* Dog Edit Page - Warm Dog Lover Theme 🐾 */
+/* Dog Edit Page - Warm Dog Lover Theme  */
 
 /* Reuse DogProfilePage styles */
 @import "./DogProfilePage.css";
@@ -6,7 +6,7 @@
 /* Form-specific enhancements */
 .dog-edit-page {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #fffbf5 0%, #fef9f3 100%);
+  background: linear-gradient(to bottom, #fff7ed 0%, #ffedd7 100%);
   padding-bottom: 8rem;
   /* Space for sticky footer */
 }
@@ -19,17 +19,17 @@
 
 /* Form Sections */
 .dog-edit-section {
-  background: linear-gradient(145deg, #ffffff 0%, #fff9f5 100%);
+  background: linear-gradient(145deg, #ffffff 0%, #fff4e8 100%);
   border-radius: 24px;
-  box-shadow: 0 8px 24px rgba(251, 146, 60, 0.12);
-  border: 3px solid #fef3e8;
+  box-shadow: 0 8px 24px rgba(181, 94, 46, 0.12);
+  border: 3px solid #f3dfc4;
   margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
 }
 
 .dog-edit-section::before {
-  content: "🐾";
+  content: "";
   position: absolute;
   top: -20px;
   right: -20px;
@@ -41,21 +41,21 @@
 
 .dog-edit-section-header {
   padding: 1.5rem;
-  border-bottom: 3px solid #fef3e8;
-  background: linear-gradient(to right, #fffbf5, #fef9f3);
+  border-bottom: 3px solid #f3dfc4;
+  background: linear-gradient(to right, #fff7ed, #ffedd7);
 }
 
 .dog-edit-section-title {
   font-size: 1.25rem;
   font-weight: 900;
-  color: #7c2d12;
-  text-shadow: 0 1px 2px rgba(251, 146, 60, 0.1);
+  color: #6f3f22;
+  text-shadow: 0 1px 2px rgba(181, 94, 46, 0.1);
   margin-bottom: 0.25rem;
 }
 
 .dog-edit-section-description {
   font-size: 0.9375rem;
-  color: #9a3412;
+  color: #8a5a3b;
   font-weight: 600;
 }
 
@@ -65,12 +65,12 @@
 
 /* Warning Box */
 .dog-edit-warning {
-  background: linear-gradient(135deg, #fef3e8, #fed7aa);
-  border: 2px solid #fdba74;
+  background: linear-gradient(135deg, #f3dfc4, #efc89f);
+  border: 2px solid #e4b07e;
   border-radius: 16px;
   padding: 1rem;
   margin-top: 1rem;
-  box-shadow: 0 4px 12px rgba(251, 146, 60, 0.15);
+  box-shadow: 0 4px 12px rgba(181, 94, 46, 0.15);
 }
 
 .dog-edit-warning-content {
@@ -80,13 +80,13 @@
 }
 
 .dog-edit-warning-icon {
-  color: #f97316;
+  color: #bf6431;
   flex-shrink: 0;
   margin-top: 0.125rem;
 }
 
 .dog-edit-warning-text {
-  color: #7c2d12;
+  color: #6f3f22;
   font-weight: 700;
   font-size: 0.9375rem;
 }
@@ -165,10 +165,10 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to right, #ffffff, #fff9f5);
-  border-top: 3px solid #fef3e8;
+  background: linear-gradient(to right, #ffffff, #fff4e8);
+  border-top: 3px solid #f3dfc4;
   padding: 1.25rem 1rem;
-  box-shadow: 0 -8px 24px rgba(251, 146, 60, 0.12);
+  box-shadow: 0 -8px 24px rgba(181, 94, 46, 0.12);
   z-index: 40;
 }
 
@@ -185,7 +185,7 @@
 
 .dog-edit-save-bar-message {
   font-size: 0.9375rem;
-  color: #9a3412;
+  color: #8a5a3b;
   font-weight: 700;
 }
 
@@ -205,33 +205,33 @@
   align-items: center;
   justify-content: space-between;
   font-size: 0.8125rem;
-  color: #9a3412;
+  color: #8a5a3b;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
 .dog-edit-progress-bar {
   width: 100%;
-  background: linear-gradient(to right, #fef3e8, #fed7aa);
+  background: linear-gradient(to right, #f3dfc4, #efc89f);
   border-radius: 9999px;
   height: 0.625rem;
   overflow: hidden;
-  border: 2px solid #fdba74;
-  box-shadow: inset 0 2px 4px rgba(251, 146, 60, 0.1);
+  border: 2px solid #e4b07e;
+  box-shadow: inset 0 2px 4px rgba(181, 94, 46, 0.1);
 }
 
 .dog-edit-progress-fill {
-  background: linear-gradient(90deg, #fb923c, #f97316);
+  background: linear-gradient(90deg, #d67c45, #bf6431);
   height: 100%;
   border-radius: 9999px;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 12px rgba(251, 146, 60, 0.5);
+  box-shadow: 0 0 12px rgba(181, 94, 46, 0.5);
 }
 
 /* Buttons */
 .dog-edit-btn-cancel {
   padding: 0.75rem 1.25rem;
-  color: #9a3412;
+  color: #8a5a3b;
   font-weight: 800;
   transition: all 0.3s ease;
   border-radius: 12px;
@@ -239,8 +239,8 @@
 }
 
 .dog-edit-btn-cancel:hover:not(:disabled) {
-  background: #fef3e8;
-  color: #7c2d12;
+  background: #f3dfc4;
+  color: #6f3f22;
 }
 
 .dog-edit-btn-cancel:disabled {
@@ -253,7 +253,7 @@
   border-radius: 16px;
   font-weight: 800;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 6px 20px rgba(251, 146, 60, 0.35);
+  box-shadow: 0 6px 20px rgba(181, 94, 46, 0.35);
   border: 2px solid rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -264,14 +264,14 @@
 }
 
 .dog-edit-btn-save-default {
-  background: linear-gradient(135deg, #fb923c, #f97316);
+  background: linear-gradient(135deg, #d67c45, #bf6431);
   color: white;
 }
 
 .dog-edit-btn-save-default:hover:not(:disabled) {
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #bf6431, #a14e23);
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(251, 146, 60, 0.5);
+  box-shadow: 0 10px 30px rgba(181, 94, 46, 0.5);
 }
 
 .dog-edit-btn-save-success {
@@ -314,7 +314,7 @@
 /* Loading State */
 .dog-edit-loading {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #fffbf5 0%, #fef9f3 100%);
+  background: linear-gradient(to bottom, #fff7ed 0%, #ffedd7 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,16 +327,16 @@
 .dog-edit-spinner {
   width: 3rem;
   height: 3rem;
-  border: 4px solid #fef3e8;
-  border-top: 4px solid #fb923c;
+  border: 4px solid #f3dfc4;
+  border-top: 4px solid #d67c45;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 1rem;
-  box-shadow: 0 6px 20px rgba(251, 146, 60, 0.25);
+  box-shadow: 0 6px 20px rgba(181, 94, 46, 0.25);
 }
 
 .dog-edit-loading-text {
-  color: #9a3412;
+  color: #8a5a3b;
   font-weight: 700;
   font-size: 1.125rem;
 }
@@ -363,19 +363,19 @@
 .dog-edit-pagination-btn {
   padding: 0.5rem 1rem;
   border-radius: 12px;
-  border: 2px solid #fef3e8;
-  background: linear-gradient(135deg, #fffbf5, #fef9f3);
-  color: #9a3412;
+  border: 2px solid #f3dfc4;
+  background: linear-gradient(135deg, #fff7ed, #ffedd7);
+  color: #8a5a3b;
   font-weight: 700;
   font-size: 0.875rem;
   transition: all 0.3s ease;
 }
 
 .dog-edit-pagination-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #fed7aa, #fdba74);
-  border-color: #fdba74;
+  background: linear-gradient(135deg, #efc89f, #e4b07e);
+  border-color: #e4b07e;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(251, 146, 60, 0.2);
+  box-shadow: 0 4px 12px rgba(181, 94, 46, 0.2);
 }
 
 .dog-edit-pagination-btn:disabled {
@@ -385,7 +385,7 @@
 
 .dog-edit-pagination-text {
   font-size: 0.875rem;
-  color: #9a3412;
+  color: #8a5a3b;
   font-weight: 700;
 }
 

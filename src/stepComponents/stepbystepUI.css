@@ -58,7 +58,7 @@
 
 .modern-progress-fill {
   height: 100%;
-  background: #3b82f6;
+  background: #d67c45;
   border-radius: 2px;
   transition: width 0.3s ease;
 }
@@ -106,7 +106,7 @@
 
 /* Modern Button Styles */
 .modern-btn-primary {
-  background: #3b82f6;
+  background: #d67c45;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -121,7 +121,7 @@
 }
 
 .modern-btn-primary:hover:not(.disabled) {
-  background: #2563eb;
+  background: #bf6431;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
@@ -211,7 +211,7 @@
 .step .text-input:focus,
 .step .select-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #d67c45;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -271,7 +271,7 @@
 }
 
 .photo-upload-container:hover {
-  border-color: #3b82f6;
+  border-color: #d67c45;
   background: #f8fafc;
 }
 
@@ -320,12 +320,12 @@
 }
 
 .add-more-btn {
-  background: #3b82f6;
+  background: #d67c45;
   color: white;
 }
 
 .add-more-btn:hover {
-  background: #2563eb;
+  background: #bf6431;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 }
@@ -1227,7 +1227,7 @@ body.step-flow-active {
 }
 
 .photo-upload-area:hover {
-  border-color: #3b82f6;
+  border-color: #d67c45;
   background: #f0f9ff;
 }
 
@@ -1259,7 +1259,7 @@ body.step-flow-active {
 }
 
 .upload-photo-btn {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, #d67c45, #a14e23);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -1272,7 +1272,7 @@ body.step-flow-active {
 }
 
 .upload-photo-btn:hover {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+  background: linear-gradient(135deg, #bf6431, #8a5a3b);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
@@ -1317,7 +1317,7 @@ body.step-flow-active {
 }
 
 .change-photo-btn {
-  background: #3b82f6;
+  background: #d67c45;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -1329,7 +1329,7 @@ body.step-flow-active {
 }
 
 .change-photo-btn:hover {
-  background: #2563eb;
+  background: #bf6431;
 }
 
 .remove-photo-btn {
@@ -1511,7 +1511,7 @@ body.step-flow-active {
 }
 
 .primary-certifications {
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid #d67c45;
   background: linear-gradient(135deg, #f8faff 0%, #ffffff 100%);
 }
 
@@ -1547,8 +1547,8 @@ body.step-flow-active {
 }
 
 .single-file-indicator {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: #f3dfc4;
+  color: #a14e23;
 }
 
 .multiple-file-indicator {
@@ -1692,7 +1692,7 @@ body.step-flow-active {
 }
 
 .primary-certifications {
-  border: 2px solid #dbeafe;
+  border: 2px solid #f3dfc4;
   border-radius: 0.75rem;
   padding: 1.5rem;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -1724,7 +1724,7 @@ body.step-flow-active {
 }
 
 .single-file-indicator {
-  color: #3b82f6;
+  color: #d67c45;
   font-size: 0.75rem;
   font-weight: 500;
 }
@@ -1769,7 +1769,7 @@ body.step-flow-active {
   align-items: center;
   margin-bottom: 0.75rem;
   font-weight: 700;
-  color: #9a3412; /* Warm brown */
+  color: #8a5a3b; /* Warm brown */
 }
 
 .loading-text {
@@ -1787,12 +1787,12 @@ body.step-flow-active {
   border-radius: 999px;
   overflow: hidden;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  border: 1px solid #fed7aa;
+  border: 1px solid #efc89f;
 }
 
 .loading-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #f97316, #fb923c); /* Orange gradient */
+  background: linear-gradient(90deg, #bf6431, #d67c45); /* Orange gradient */
   border-radius: 999px;
   transition: width 0.3s ease-out;
   box-shadow: 0 1px 2px rgba(249, 115, 22, 0.3);

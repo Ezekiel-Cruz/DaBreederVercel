@@ -23,19 +23,19 @@ export default function AdminModal({ isOpen, onClose, title, children, maxWidth 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4b3a33]/35 backdrop-blur-sm"
       onClick={handleBackdropClick}
     >
       <div
-        className={`${maxWidthClasses[maxWidth]} w-full bg-white rounded-xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200`}
+        className={`${maxWidthClasses[maxWidth]} w-full bg-[#fff9f1] border border-[#eadfce] rounded-2xl shadow-2xl transform transition-all animate-in fade-in zoom-in-95 duration-200`}
       >
         {/* Modal Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-            <h2 className="text-xl font-bold text-slate-900">{title}</h2>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[#e9d8c3]">
+            <h2 className="text-xl font-bold text-[#5b4a45]">{title}</h2>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100"
+              className="text-[#8a7770] hover:text-[#5b4a45] transition-colors p-1 rounded-lg hover:bg-[#f5e4cf]"
               aria-label="Close modal"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
